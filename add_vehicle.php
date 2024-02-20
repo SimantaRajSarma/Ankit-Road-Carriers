@@ -646,11 +646,12 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
 </script>
 
                 </div>
+                
                   <div class="text-center m-1">
                     <button
                       type="submit"
                       name="submit"
-                      class="btn btn-lg btn-success shadow"
+                      class="btn btn-success shadow"
                     >
                       Submit
                     </button>

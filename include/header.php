@@ -176,13 +176,13 @@
 
 
                 <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#components-nav23" data-bs-toggle="collapse" href="#">
-            <i class="fa-solid fa-box"></i><span>Product Management</span><i class="fa-solid fa-lock ms-auto"></i>
+            <a class="nav-link collapsed" data-bs-target="#components-nav7" data-bs-toggle="collapse" href="#">
+            <i class="fa-solid fa-box"></i><span>Product Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="components-nav7" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 
                   <li class="nav-item">
-            <a class="nav-link collapsed" href="manage_about.php">
+            <a class="nav-link collapsed" href="add_product.php">
             <i class="bi bi-circle"></i>
               <span>Add Product</span>
             </a>
@@ -190,7 +190,7 @@
           
                 
                   <li class="nav-item">
-            <a class="nav-link collapsed" href="manage_contact.php">
+            <a class="nav-link collapsed" href="manage_product.php">
             <i class="bi bi-circle"></i>
               <span>Manage Product</span>
             </a>

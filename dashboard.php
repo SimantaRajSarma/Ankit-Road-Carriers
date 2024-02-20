@@ -117,45 +117,45 @@ include('include/header.php');
               <!-- End Revenue Card -->
 
               <!-- Revenue Card -->
-              <!-- <div class="col-xxl-4 col-md-6">
+              <div class="col-xxl-4 col-md-6">
               <div class="card info-card revenue-card">
 
 
                 <div class="card-body">
-                  <h5 class="card-title">Donation <span>| Total</span></h5>
+                  <h5 class="card-title">Product <span>| Total</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi bi-question-circle-fill"></i>
+                    <i class="bi bi-box-seam"></i>
                     </div>
                     <div class="ps-3">
                     <h6>
 
-20,000
+20
 </h6>
                     </div>
                   </div>
                 </div>
 
               </div>
-            </div> -->
+            </div>
               <!-- End Revenue Card -->
 
               <!-- Revenue Card -->
-              <!-- <div class="col-xxl-4 col-md-6">
+              <div class="col-xxl-4 col-md-6">
               <div class="card info-card revenue-card">
 
 
                 <div class="card-body">
-                  <h5 class="card-title">Donation Amount <span>| Total</span></h5>
+                  <h5 class="card-title">Client <span>| Total</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi bi-journal-album"></i>
+                    <i class="bi bi-people-fill"></i>
                     </div>
                     <div class="ps-3">
                       <h6>
-                  100
+                  10
  </h6>
 
 
@@ -164,7 +164,7 @@ include('include/header.php');
                 </div>
 
               </div>
-         </div> -->
+         </div>
               <!-- End Revenue Card  -->
             </div>
           </div>
