@@ -19,7 +19,7 @@ error_reporting(0);
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Manage Vehicles</title>
+  <title>Manage Products</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -188,14 +188,14 @@ function deleteConfirm(obj){
             <thead>
               <tr>
               <th scope="col">#</th>
-                <th scope="col">Product Nmae</th>
+                <th scope="col">Product Name</th>
                 <th scope="col">Category</th>
                 <th scope="col">Unit</th>
                 <th scope="col">CGST (%)</th>
                 <th scope="col">SGST (%)</th>
                 <th scope="col">Op Qty</th>
                 <th>HSN/SAC Code</th>
-                <th widtd="15%">Action</th>
+                <th width="15%">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -211,16 +211,8 @@ function deleteConfirm(obj){
                 <td><?php echo $row['sgst'];?></td>
                 <td><?php echo $row['opening_quantity'];?></td>
                 <td><?php echo $row['hsn_sac_code'];?></td>
-            <td>
-                                                <a href="#" class="btn btn-success btn-sm">
-                                                <i class="bi bi-pencil-square"></i>
-                                                </a>
-                                                &nbsp;
-                                                <button class="btn btn-danger btn-sm" onclick="deleteConfirm('delete_course.php?course_id=<?php echo $row['product_id']; ?>')">
-    <i class="bi bi-trash3"></i>
-</button>
-
-                                                </td>
+                <!-- <td></td> -->
+                <td><button  class="btn btn-secondary"><i class="fa-solid fa-lock ms-auto"></i></button></td>
 
             </tr>
            

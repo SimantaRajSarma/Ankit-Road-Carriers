@@ -1,17 +1,6 @@
-
-
 <?php
-session_start();
-include("include/connection.php");
 
-if (!isset($_SESSION["admin_id"])) {
-    header("location:index.php");
-    exit();
-}
-
-?>
-<?php
-include("include/connection.php");
+require_once("include/connection.php");
 
 if(isset($_POST['submit'])) {
     $alertClass = ""; // Initialize the alert class
@@ -39,27 +28,15 @@ if(isset($_POST['submit'])) {
 
         $result = mysqli_query($conn, $sql);
 
-        if($result) {
-            // Product added successfully
-            $alertClass = "alert-success";
-            $alertMessage = "Product Added Successfully";
-        } else {
-            // Error adding product to database
-            $alertClass = "alert-danger";
-            $alertMessage = "Error adding product";
-        }
     } else {
         // Display an error if any required field is empty
         $alertClass = "alert-danger";
         $alertMessage = "Please fill in all required fields";
     }
 
-    // Display alert message
-    echo '<script>
-            window.onload = function() {
-                document.getElementById("passwordAlert").classList.remove("d-none");
-            }
-          </script>';
+    header('Location: success.php');
+    exit();
+
 }
 ?>
 
@@ -106,12 +83,6 @@ if(isset($_POST['submit'])) {
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title text-center">Add New Product</h5>
-                <?php if (isset($alertMessage)): ?>
-      <div class="alert <?php echo $alertClass; ?> alert-dismissible fade show" role="alert">
-    <?php echo $alertMessage; ?>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-            <?php endif; ?> 
                 <!-- Vertical Form -->
                 <form
                   class="row g-3"
