@@ -150,13 +150,12 @@
 
                 <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#components-nav4" data-bs-toggle="collapse" href="#">
-            <i class="fa-solid fa-user"></i><span>Driver Management</span><i class="fa-solid fa-lock ms-auto"></i>
-            <!-- <i class="bi bi-chevron-down ms-auto"></i> -->
+            <i class="fa-solid fa-user"></i><span>Driver Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="components-nav2" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="components-nav4" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 
                   <li class="nav-item">
-            <a class="nav-link collapsed" href="add_donation.php">
+            <a class="nav-link collapsed" href="add_driver.php">
             <i class="bi bi-circle"></i>
               <span>Add Driver</span>
             </a>
@@ -164,7 +163,7 @@
           
                 
                   <li class="nav-item">
-            <a class="nav-link collapsed" href="manage_donation.php">
+            <a class="nav-link collapsed" href="manage_driver.php">
             <i class="bi bi-circle"></i>
               <span>Manage Driver</span>
             </a>

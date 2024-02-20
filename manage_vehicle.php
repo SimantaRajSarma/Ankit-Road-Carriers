@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(0);
     require_once('include/connection.php');
 
     // SQL query to retrieve all data from the vehicle table
