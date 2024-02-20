@@ -166,8 +166,9 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
 
     // Close database connection
     $conn->close();
-
-    echo '<script>alert("Form submitted successfully!");</script>';
+     
+    header("Location: success.php");
+    exit();
 }
 ?>
 
@@ -594,7 +595,7 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
 
                   <!-- documents -->
                   <div class="tab-pane fade" id="documents-section">
-    <div class="row document-upload-row">
+    <div class="row" id="document-upload-container">
         <div class="col-2">
             <label for="document_file" class="form-label fw-bold">Choose documents:</label>
             <input type="file" class="form-control document-file" name="document_files[]" />
@@ -618,32 +619,13 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
             <input type="text" class="form-control remarks" name="remarks[]" />
         </div>
 
-        <!-- <div class="col-1 py-4">
-            <button class="btn btn-lg btn-primary add-row-btn">+</button>
-        </div> -->
+        <div class="col-1 py-4">
+            <button type="button"  class="btn btn-lg btn-primary add-row-btn" >+</button>
+        </div>
     </div>
 </div>
 
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Find the button and add click event listener
-    var addButton = document.querySelector(".add-row-btn");
-    addButton.addEventListener("click", function() {
-        // Clone the document upload row
-        var documentRow = this.parentElement.parentElement;
-        var clonedRow = documentRow.cloneNode(true);
-        
-        // Clear file input value in the cloned row to avoid duplicating file uploads
-        var fileInput = clonedRow.querySelector('.document-file');
-        // fileInput.value = '';
-
-        // Append the cloned row after the last row
-        documentRow.parentElement.appendChild(clonedRow);
-    });
-});
-
-</script>
 
                 </div>
                 
@@ -708,6 +690,12 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
     $("#documents-section").addClass("show active");
   });
 });
+
+function cloneDocumentUploadRow(button) {
+        var container = document.getElementById('document-upload-container');
+        var rowToClone = button.parentElement.parentElement.cloneNode(true);
+        container.appendChild(rowToClone);
+    }
 
     </script>
   </body>
