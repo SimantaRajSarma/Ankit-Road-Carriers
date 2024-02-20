@@ -2,7 +2,7 @@
 <header id="header" class="header fixed-top d-flex align-items-center">
 
 <div class="d-flex align-items-center justify-content-between">
-  <a href="s-dash.php" class="logo d-flex align-items-center">
+  <a href="s-dashboard.php" class="logo d-flex align-items-center">
     
     <span class="d-none d-lg-block">Logistics Software</span>
   </a>
@@ -114,7 +114,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link " href="dash.php">
+        <a class="nav-link " href="dashboard.php">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>

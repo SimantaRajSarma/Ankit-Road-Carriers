@@ -6,7 +6,7 @@ $username="root";
 
 $password="";
 
-$dbname="Chirasatirtham";
+$dbname="logistics_software";
 
 $conn=mysqli_connect($servername,$username,$password,$dbname);
 
