@@ -227,8 +227,8 @@
                 </li>
      
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
-                <i class="fa-solid fa-table-list"></i><span>Trip/LR Entry</span><i class="fa-solid fa-lock ms-auto"></i>
+                <a class="nav-link collapsed" href="trip_Lr_entry.php">
+                <i class="fa-solid fa-table-list"></i><span>Trip/LR Entry</span>
                 </a>
             </li>
 
