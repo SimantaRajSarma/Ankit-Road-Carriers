@@ -88,8 +88,8 @@ if (isset($_POST['submit'])) {
 
               <div class="d-flex justify-content-center py-4">
                 <a href="login.php" class="logo d-flex align-items-center w-auto">
-                  <!-- <img src="https://www.infotechcec.in/assets/images/logo/TM%20Logo2.png"  alt=""> -->
-                  <span class="d-none d-lg-block">Chirasatirtham NGO</span>
+                  <img src="https://ankitroadcarrier.in/logon33.jpg"  alt="">
+                  <span class="d-none d-lg-block">Ankit Road Carrier</span>
                 </a>
               </div><!-- End Logo -->
 
