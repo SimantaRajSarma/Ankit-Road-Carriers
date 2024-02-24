@@ -203,13 +203,13 @@
      
      
                 <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#" data-bs-toggle="collapse" href="#">
-            <i class="fa-solid fa-face-smile"></i><span>Client Management</span><i class="fa-solid fa-lock ms-auto"></i>
+            <a class="nav-link collapsed" data-bs-target="#components-nav8" data-bs-toggle="collapse" href="#">
+            <i class="fa-solid fa-face-smile"></i><span>Client Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="components-nav8" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 
                   <li class="nav-item">
-            <a class="nav-link collapsed" href="add_event.php">
+            <a class="nav-link collapsed" href="add_client.php">
             <i class="bi bi-circle"></i>
               <span>Add New Client</span>
             </a>
@@ -217,7 +217,7 @@
           
                 
                   <li class="nav-item">
-            <a class="nav-link collapsed" href="manage_event.php">
+            <a class="nav-link collapsed" href="manage_client.php">
             <i class="bi bi-circle"></i>
               <span>Manage Clients</span>
             </a>
