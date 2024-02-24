@@ -234,8 +234,8 @@
 
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
-                <i class="fa-solid fa-table-columns"></i><span>Party Bill Entry</span><i class="fa-solid fa-lock ms-auto"></i>
+                <a class="nav-link collapsed" href="party_bill_entry.php">
+                <i class="fa-solid fa-table-columns"></i><span>Party Bill Entry</span>
                 </a>
             </li><!-- End Register Page Nav -->
           
