@@ -96,7 +96,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title text-center">Trip Entry</h5>
+                <h5 class="card-title text-center">Trip / LR Entry</h5>
                 <!-- <div class="alert alert-success alert-dismissible fade show" role="alert">
         Hello
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -510,6 +510,147 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 />
             </div>
 
+
+
+            <hr>
+            <h5 class="card-title text-center">Consignor Details</h5>
+
+
+            <div class="col-3">
+                <label for="lr_number" class="form-label fw-bold">Consignor Name :</label>
+                <input
+                type="number"
+                    name="product"
+                    class="form-control"
+                    value=""
+                  
+                    
+                />
+            </div>
+
+
+
+            <div class="col-3">
+                <label for="lr_number" class="form-label fw-bold">Mobile No :</label>
+                <input
+                type="number"
+                    name="product"
+                    class="form-control"
+                    value=""
+                  
+                    
+                />
+            </div>
+
+
+
+            
+            <div class="col-3">
+                <label for="lr_number" class="form-label fw-bold">GSTIN NO :</label>
+                <input
+                type="text"
+                    name="product"
+                    class="form-control"
+                    value=""
+                  
+                    
+                />
+            </div>
+
+
+            <div class="col-3">
+                <label for="lr_number" class="form-label fw-bold">Email :</label>
+                <input
+                type="email"
+                    name="product"
+                    class="form-control"
+                    value=""
+                  
+                    
+                />
+            </div>
+
+
+
+            <div class="col-12">
+    <label for="client_address" class="form-label fw-bold">Address:</label>
+    <textarea id="client_address" name="client_address" class="form-control" placeholder="Enter Client Address" rows="3"></textarea>
+</div>
+
+<h5 class="card-title text-center">Consignee / Buyer Details</h5>
+
+
+
+
+
+
+<div class="col-3">
+                <label for="lr_number" class="form-label fw-bold">Consignor Name :</label>
+                <input
+                type="number"
+                    name="product"
+                    class="form-control"
+                    value=""
+                  
+                    
+                />
+            </div>
+
+
+
+            <div class="col-3">
+                <label for="lr_number" class="form-label fw-bold">Mobile No :</label>
+                <input
+                type="number"
+                    name="product"
+                    class="form-control"
+                    value=""
+                  
+                    
+                />
+            </div>
+
+
+
+            
+            <div class="col-3">
+                <label for="lr_number" class="form-label fw-bold">GSTIN NO :</label>
+                <input
+                type="text"
+                    name="product"
+                    class="form-control"
+                    value=""
+                  
+                    
+                />
+            </div>
+
+
+            <div class="col-3">
+                <label for="lr_number" class="form-label fw-bold">Email :</label>
+                <input
+                type="email"
+                    name="product"
+                    class="form-control"
+                    value=""
+                  
+                    
+                />
+            </div>
+
+
+            
+            <div class="col-6">
+    <label for="client_address" class="form-label fw-bold">Address:</label>
+    <textarea id="client_address" name="client_address" class="form-control" placeholder="Enter Client Address" rows="3"></textarea>
+</div>
+
+
+
+<div class="col-6">
+    <label for="client_address" class="form-label fw-bold">Delivery Address:</label>
+    <textarea id="client_address" name="client_address" class="form-control" placeholder="Enter Client Address" rows="3"></textarea>
+</div>
 
                 </div>
                
