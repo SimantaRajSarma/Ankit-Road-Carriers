@@ -111,6 +111,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet" />
 
+
+    <style>
+
+
+</style>
   </head>
   <body>
     <?php include('include/header.php');  ?>
@@ -134,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   action=""
                 >
                 <div class="row">
-                <div class="col-3">
+                <div class="col-md-3 col-sm-12">
                     <label for="vehicle_no" class="form-label fw-bold">Vehicle No :</label>
                  <select name="vehicle_no" class="form-select" id="vehicle_no" required>
                     <option selected disabled>Select vehicle...</option>
@@ -146,7 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </select>
                 </div>
 
-                <div class="col-3">
+                <div class="col-md-3 col-sm-12">
                   <label for="lr_date" class="form-label fw-bold">LR Date :</label>
                   <input
                       type="date"
@@ -158,7 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               </div>
              
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
     <label for="lr_type" class="form-label fw-bold">LR Type:</label>
     <select id="lr_type" name="lr_type" class="form-select fw-semibold">
         
@@ -169,7 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 
-<div class="col-3">
+<div class="col-md-3 col-sm-12">
                 <label for="against_trip_id" class="form-label fw-bold">Agnst Trip ID :</label>
                 <input
                     type="number"
@@ -181,7 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
     
-            <div class="col-3">
+<div class="col-md-3 col-sm-12">
                 <label for="lr_number" class="form-label fw-bold">LR No :</label>
                 <input
                 type="number"
@@ -193,7 +198,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="challan_no" class="form-label fw-bold">Chln No :</label>
                 <input
                 type="number"
@@ -205,7 +210,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                     
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
     <label for="loading_wt" class="form-label fw-bold">Loading Wt (MT) :</label>
     <input
         type="number"
@@ -219,7 +224,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                         
-<div class="col-3">
+<div class="col-md-3 col-sm-12">
     <label for="unload_wt" class="form-label fw-bold">Unload Wt (MT) :</label>
     <input
         type="number"
@@ -233,7 +238,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            <div class="col-6">
+            <div class="col-md-3 col-sm-12">
                 <label for="product_name" class="form-label fw-bold">Product Name :</label>
                 <select name="product_name" class="form-select" required>
                     <option selected disabled>Select product...</option>
@@ -246,7 +251,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
     <label for="party_rate" class="form-label fw-bold">Party Rate :</label>
     <input
         type="number"
@@ -258,7 +263,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     />
 </div>
     
-<div class="col-3">
+<div class="col-md-3 col-sm-12">
     <label for="transporter_rate" class="form-label fw-bold">Trptr Rate :</label>
     <input
         type="number"
@@ -270,18 +275,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     />
 </div>
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
     <label for="source" class="form-label fw-bold">Source:</label>
     <input type="text" name="source" class="form-control" placeholder="Enter Source...">
 </div>
 
-<div class="col-3">
+<div class="col-md-3 col-sm-12">
     <label for="destination" class="form-label fw-bold">Destination</label>
     <input type="text" name="destination" class="form-control" placeholder="Enter Destination...">
 </div>
 
 
-<div class="col-3">
+<div class="col-md-3 col-sm-12">
     <label for="party_rate_type" class="form-label fw-bold">Party Rate Type:</label>
     <input
         type="text"
@@ -294,7 +299,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-<div class="col-3">
+<div class="col-md-3 col-sm-12">
     <label for="transporter_rate_type" class="form-label fw-bold">Trptr Rate Type:</label>
     <input
         type="text"
@@ -309,7 +314,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            <div class="col-6">
+            <div class="col-md-6 col-sm-12">
     <label for="bill_mode" class="form-label fw-bold">Bill Mode:</label>
     <select id="bill_mode" name="bill_mode" class="form-select">
         <option value="TO BE BILLED">TO BE BILLED</option>
@@ -321,7 +326,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
    
-            <div class="col-6">
+            <div class="col-md-6 col-sm-12">
                 <label for="driver_name" class="form-label fw-bold">Driver Name :</label>
                 <select name="driver_name" class="form-select" required>
                     <option selected disabled>Select driver...</option>
@@ -334,7 +339,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
 
-            <div class="col-6">
+            <div class="col-md-6 col-sm-12">
                 <label for="party_name" class="form-label fw-bold">Party Name :</label>
                 <select name="party_name" class="form-select">
                     <option selected disabled>Select Party...</option>
@@ -347,7 +352,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
 
-            <div class="col-6">
+            <div class="col-md-6 col-sm-12">
                 <label for="vehicle_owner" class="form-label fw-bold">Vehicle Owner :</label>
                 <input
                 type="text"
@@ -360,7 +365,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            <div class="col-6">
+            <div class="col-md-6 col-sm-12">
                 <label for="bill_no" class="form-label fw-bold">Bill No :</label>
                 <input
                 type="text"
@@ -373,7 +378,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
 
-            <div class="col-6">
+            <div class="col-md-6 col-sm-12">
                 <label for="statement_no" class="form-label fw-bold">Statement No :</label>
                 <input
                 type="text"
@@ -387,7 +392,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
             
-            <div class="col-6">
+            <div class="col-md-6 col-sm-12">
             <label for="bill_freight" class="form-label fw-bold">Bill Freight :</label>
                 <input
                     type="number"
@@ -400,7 +405,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
              
-        <div class="col-6">
+        <div class="col-md-6 col-sm-12">
     <label for="vehicle_freight" class="form-label fw-bold">Vehicle Freight :</label>
     <input
         type="number"
@@ -413,7 +418,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="bill_balance_amount" class="form-label fw-bold">Balance Amount :</label>
                 <input
                 type="number"
@@ -426,7 +431,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 />
             </div>
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="bill_total_advance" class="form-label fw-bold">Total Advance :</label>
                 <input
                 type="number"
@@ -440,7 +445,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="statement_balance_amount" class="form-label fw-bold">Balance Anount :</label>
                 <input
                 type="number"
@@ -455,7 +460,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="statement_total_advance" class="form-label fw-bold">Total Advance :</label>
                 <input
                 type="number"
@@ -473,7 +478,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h5 class="card-title text-center">Consignor Details</h5>
 
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="consignor_name" class="form-label fw-bold">Consignor Name :</label>
                 <input
                 type="text"
@@ -486,7 +491,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="consignor_mobile" class="form-label fw-bold">Mobile No :</label>
                 <input
                 type="number"
@@ -500,7 +505,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
             
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="consignor_gstin" class="form-label fw-bold">GSTIN NO :</label>
                 <input
                 type="text"
@@ -512,7 +517,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="consignor_email" class="form-label fw-bold">Email :</label>
                 <input
                 type="email"
@@ -537,7 +542,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-<div class="col-3">
+<div class="col-md-3 col-sm-12">
                 <label for="consignee_name" class="form-label fw-bold">Consignee Name :</label>
                 <input
                 type="text"
@@ -550,7 +555,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="consignee_mobile" class="form-label fw-bold">Mobile No :</label>
                 <input
                 type="number"
@@ -564,7 +569,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
             
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="consignee_gstin" class="form-label fw-bold">GSTIN NO :</label>
                 <input
                 type="text"
@@ -576,7 +581,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
 
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
                 <label for="consignee_email" class="form-label fw-bold">Email :</label>
                 <input
                 type="email"
