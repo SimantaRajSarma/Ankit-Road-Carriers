@@ -173,7 +173,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <select id="lr_type" name="lr_type" class="form-select fw-semibold">
         
         <option value="Single">Single</option>
-        <!-- <option value="Multiple">Multiple</option> -->
+         <option value="Multiple">Multiple</option> 
        
     </select>
 </div>
@@ -194,22 +194,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="col-md-3 col-sm-12">
                 <label for="lr_number" class="form-label fw-bold">LR No :</label>
                 <input
-                type="number"
+                type="text"
                     name="lr_number"
                     class="form-control"
                     value=""
-                    readonly
+                   
                 />
             </div>
 
             
             <div class="col-md-3 col-sm-12">
-                <label for="challan_no" class="form-label fw-bold">Chln No :</label>
+                <label for="challan_no" class="form-label fw-bold">Invoice No :</label>
                 <input
-                type="number"
+                type="text"
                     name="challan_no"
                     class="form-control"
-                    placeholder="challan number..."
+                    placeholder="Enter Invoice No"
                 />
             </div>
 
@@ -345,7 +345,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
             <div class="col-md-6 col-sm-12">
-                <label for="party_name" class="form-label fw-bold">Party Name :</label>
+                <label for="party_name" class="form-label fw-bold">Party Name : (For Billing ) </label>
                 <select name="party_name" class="form-select">
                     <option selected disabled>Select Party...</option>
                     <?php 
@@ -370,30 +370,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            <div class="col-md-6 col-sm-12">
-                <label for="bill_no" class="form-label fw-bold">Bill No :</label>
-                <input
-                type="text"
-                    name="bill_no"
-                    class="form-control"
-                    value=""
-                    readonly
-                    
-                />
-            </div>
 
 
-            <div class="col-md-6 col-sm-12">
-                <label for="statement_no" class="form-label fw-bold">Statement No :</label>
-                <input
-                type="text"
-                    name="statement_no"
-                    class="form-control"
-                    value=""
-                    readonly
-                    
-                />
-            </div>
 
 
             
@@ -477,9 +455,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 />
             </div>
 
-
-
-            <hr>
+            
             <h5 class="card-title text-center">Consignor Details</h5>
 
 
@@ -540,14 +516,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <textarea id="consignor_address" name="consignor_address" class="form-control" placeholder="Enter Client Address" rows="3"></textarea>
 </div>
 
-<h5 class="card-title text-center">Consignee / Buyer Details</h5>
+<h5 class="card-title text-center">Consignee Details</h5>
 
 
 
 
 
 
-<div class="col-md-3 col-sm-12">
+             <div class="col-md-3 col-sm-12">
                 <label for="consignee_name" class="form-label fw-bold">Consignee Name :</label>
                 <input
                 type="text"

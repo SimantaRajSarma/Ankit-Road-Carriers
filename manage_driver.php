@@ -9,7 +9,7 @@ if (!isset($_SESSION["admin_id"])) {
 }
 
     // SQL query to retrieve all data from the Driver table
-    $sql = "SELECT * FROM driver INNER JOIN joiningdetails ON driver.DriverID = joiningdetails.DriverID";
+    $sql = "SELECT * FROM driver ";
 
     // Execute the query
     $result = $conn->query($sql);
@@ -194,12 +194,11 @@ function deleteConfirm(obj){
             <thead>
               <tr>
               <th scope="col">#</th>
-                <th scope="col">Photo</th>
+              
                 <th scope="col">Driver Name.</th>
                 <th scope="col">Mobile No.</th>
-                <th scope="col">Joining Date</th>
-                <th scope="col">Status</th>
-                <th></th>
+                <th scope="col">LicenseNo</th>
+              
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -209,14 +208,16 @@ function deleteConfirm(obj){
                 ?>
               <tr>
               <td><b><?php echo $rank?></b></td>
-              <td><img src="<?php echo $row['PhotoPath'];?>" width="100px" height="100px"/></td>
+            
                 <td><?php echo $row['DriverName'];?></td>
                 <td><?php echo $row['MobileNo'];?>&nbsp;</td>
-                <td><?php echo $row['JoiningDate'];?></td>
-                <td><?php echo $row['Status'];?></td>
-                <td></td>
-                <td><button  class="btn btn-danger"><i class="fa-solid fa-lock ms-auto"></i></button></td>
-                <!-- <i class="fa-solid fa-trash"></i>onclick="javascript: deleteConfirm('delete_data.php?id=<?php echo $row['DriverID'];?>');" -->
+                <td><?php echo $row['LicenseNo'];?></td>
+              
+                  <td>
+                       <button class="btn btn-danger btn-sm" onclick="deleteConfirm('delete_driver.php?DriverID=<?php echo $row['DriverID']; ?>')">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                  </td>
             </tr>
            
                 <?php $rank++; }?>

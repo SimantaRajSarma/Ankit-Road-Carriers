@@ -2,11 +2,11 @@
 
 $servername="localhost";
 
-$username="u782203485_Ankit772";
+$username="root";
 
-$password="ARC@737373_Road";
+$password="";
 
-$dbname="u782203485_ankitroad";
+$dbname="logistics_software";
 
 $conn=mysqli_connect($servername,$username,$password,$dbname);
 

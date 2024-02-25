@@ -196,12 +196,11 @@ function deleteConfirm(obj){
               <th scope="col">#</th>
                 <th scope="col">Vehicle No.</th>
                 <th scope="col">Vehicle Type</th>
-                <th scope="col">Capacity</th>
+               
                 <th scope="col">Ownership</th>
-                <th scope="col">Driver Name</th>
+             
                 <th scope="col">Vehicle Owner</th>
-                <th></th>
-                <th scope="col">Action</th>
+                  <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -212,13 +211,19 @@ function deleteConfirm(obj){
               <td><b><?php echo $rank?></b></td>
                 <td><?php echo $row['VehicleNo'];?></td>
                 <td><?php echo $row['VehicleType'];?>&nbsp;</td>
-                <td><?php echo $row['Capacity'];?></td>
+                
                 <td><?php echo $row['OwnerType'];?></td>
-                <td><?php echo $row['OwnerType'];?></td>
+               
                 <td><?php echo $row['VehicleOwner'];?></td>
-                <td></td>
-                <td><button  class="btn btn-danger"><i class="fa-solid fa-lock ms-auto"></i></button></td>
-                <!-- <i class="fa-solid fa-trash"></i>onclick="javascript: deleteConfirm('delete_data.php?id=<?php echo $row['VehicleID'];?>');" -->
+
+
+<td>
+         <button class="btn btn-danger btn-sm" onclick="deleteConfirm('delete_vehicle.php?vehicle_id=<?php echo $row['VehicleID'];?>')">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+</td>
+
+
             </tr>
            
                 <?php $rank++; }?>

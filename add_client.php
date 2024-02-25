@@ -20,15 +20,15 @@ if(isset($_POST['submit'])) {
     $client_name = $_POST['client_name'];
     $client_type = $_POST['client_type'];
     $mobile = $_POST['mobile'];
-    $email = $_POST['email'];
+    $gstin = $_POST['gstin'];
     $client_address = $_POST['client_address'];
     
 
     // Check if all required fields are filled
     if(!empty($client_name) ) {
         // Proceed with inserting data into the database
-        $sql = "INSERT INTO party (party_name,party_type,contact_phone, contact_email,address) 
-                VALUES ('$client_name', '$client_type','$mobile','$email','$client_address')";
+        $sql = "INSERT INTO party (party_name,party_type,contact_phone,gstin,address) 
+                VALUES ('$client_name', '$client_type','$mobile',' $gstin','$client_address')";
 
         $result = mysqli_query($conn, $sql);
 
@@ -38,8 +38,8 @@ if(isset($_POST['submit'])) {
         $alertMessage = "Please fill in all required fields";
     }
 
-    echo "<script>alert('Client Added Successfully!');</script>";
-    exit();
+   $alertClass = "alert-success";
+        $alertMessage = "Client Add Successfull";
 
 }
 ?>
@@ -87,6 +87,13 @@ if(isset($_POST['submit'])) {
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title text-center">Add New Client</h5>
+                
+                 <?php if (isset($alertMessage)): ?>
+      <div class="alert <?php echo $alertClass; ?> alert-dismissible fade show" role="alert">
+    <?php echo $alertMessage; ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+            <?php endif; ?> 
                 <!-- Vertical Form -->
                 <form class="row g-3" method="post" enctype="multipart/form-data" action="">
 
@@ -132,16 +139,18 @@ if(isset($_POST['submit'])) {
  
                   <div class="col-6">
                     <label for="email" class="form-label fw-bold"
-                      >Contact Emails :</label
+                      >GSTIN No :</label
                     >
                     <input
-                      type="email"
+                      type="text"
                       class="form-control"
-                      name="email"
-                      placeholder="Enter Contact Email"
+                      name="gstin"
+                      placeholder="Enter GSTIN No"
                      
                     />
                   </div>
+
+
 
 
                  

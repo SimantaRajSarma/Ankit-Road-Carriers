@@ -197,7 +197,7 @@ function deleteConfirm(obj){
                 <th scope="col">Client Name</th>
                 <th scope="col">Type</th>
                 <th scope="col">Mobile No</th>
-                <th scope="col">Email</th>
+                <th scope="col">GSTIN</th>
                 <th scope="col">Address</th>
             
                 <th width="15%">Action</th>
@@ -212,11 +212,13 @@ function deleteConfirm(obj){
                 <td><?php echo $row['party_name'];?></td>
                 <td><?php echo $row['party_type'];?>&nbsp;</td>
                 <td><?php echo $row['contact_phone'];?></td>
-                <td><?php echo $row['contact_email'];?></td>
+                <td><?php echo $row['gstin'];?></td>
                 <td><?php echo $row['address'];?></td>
             
-                <td><button class="btn btn-danger"><i class="fa-solid fa-lock ms-auto"></i></button></td>
-               <!-- <td><button  class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></button> -->
+                <td><button class="btn btn-danger btn-sm" onclick="deleteConfirm('delete_client.php?client_id=<?php echo $row['party_id']; ?>')">
+                        <i class="bi bi-trash3"></i>
+                    </button></td>
+             
             </tr>
            
                 <?php $rank++; }?>

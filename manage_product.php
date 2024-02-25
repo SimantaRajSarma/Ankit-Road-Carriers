@@ -195,12 +195,10 @@ function deleteConfirm(obj){
               <tr>
               <th scope="col">#</th>
                 <th scope="col">Product Name</th>
-                <th scope="col">Category</th>
                 <th scope="col">Unit</th>
-                <th scope="col">CGST (%)</th>
-                <th scope="col">SGST (%)</th>
-                <th scope="col">Op Qty</th>
-                <th>HSN/SAC Code</th>
+                <th scope="col"> Qty</th>
+                
+                <th>Rate</th>
                 <th width="15%">Action</th>
               </tr>
             </thead>
@@ -211,14 +209,16 @@ function deleteConfirm(obj){
               <tr>
               <td><b><?php echo $rank?></b></td>
                 <td><?php echo $row['product_name'];?></td>
-                <td><?php echo $row['product_group'];?>&nbsp;</td>
+               
                 <td><?php echo $row['unit'];?></td>
-                <td><?php echo $row['cgst'];?></td>
-                <td><?php echo $row['sgst'];?></td>
+                
+               
                 <td><?php echo $row['opening_quantity'];?></td>
-                <td><?php echo $row['hsn_sac_code'];?></td>
+                <td><?php echo $row['rate'];?></td>
                 <!-- <td></td> -->
-                <td><button  class="btn btn-danger"><i class="fa-solid fa-lock ms-auto"></i></button></td>
+                <td><button class="btn btn-danger btn-sm" onclick="deleteConfirm('delete_product.php?product_id=<?php echo $row['product_id']; ?>')">
+                        <i class="bi bi-trash3"></i>
+                    </button></td>
 
             </tr>
            

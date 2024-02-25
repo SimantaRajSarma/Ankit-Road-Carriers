@@ -13,24 +13,22 @@ if(isset($_POST['submit'])) {
     $alertMessage = ""; // Initialize the alert message
 
     $date = $_POST['date'];
-    $code = $_POST['code'];
+   
     $product_name = $_POST['product_name'];
-    $product_group = $_POST['product_group'];
+   
     $unit = $_POST['unit'];
-    $cgst = $_POST['cgst'];
-    $sgst = $_POST['sgst'];
+  
     $rate = $_POST['rate'];
     $qty = $_POST['qty'];
-    $hsn = $_POST['hsn'];
-    $godown = $_POST['godown'];
+  
     $remarks = $_POST['remarks'];
 
 
     // Check if all required fields are filled
     if(!empty($date)  && !empty($product_name) ) {
         // Proceed with inserting data into the database
-        $sql = "INSERT INTO products (date, code, product_name, product_group, unit, cgst, sgst, rate, opening_quantity, hsn_sac_code, godown, remarks) 
-                VALUES ('$date', '$code', '$product_name', '$product_group', '$unit', '$cgst', '$sgst', '$rate', '$qty', '$hsn', '$godown', '$remarks')";
+        $sql = "INSERT INTO products (date, product_name,  unit, rate, opening_quantity,  remarks) 
+                VALUES ('$date', '$product_name', '$unit', '$rate', '$qty', '$remarks')";
 
         $result = mysqli_query($conn, $sql);
 
@@ -40,8 +38,10 @@ if(isset($_POST['submit'])) {
         $alertMessage = "Please fill in all required fields";
     }
     
-    echo "<script>alert('Product Added Successfully!');</script>";
-    exit();
+
+    
+     $alertClass = "alert-success";
+        $alertMessage = "Product Added Successfully";
 
 }
 ?>
@@ -89,6 +89,13 @@ if(isset($_POST['submit'])) {
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title text-center">Add New Product</h5>
+                 <?php if (isset($alertMessage)): ?>
+      <div class="alert <?php echo $alertClass; ?> alert-dismissible fade show" role="alert">
+    <?php echo $alertMessage; ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+            <?php endif; ?> 
+                
                 <!-- Vertical Form -->
                 <form
                   class="row g-3"
@@ -107,26 +114,15 @@ if(isset($_POST['submit'])) {
                       class="form-control"
                       id="inputNanme4"
                       name="date" 
+                      value="<?php echo date('d-m-y'); ?>
+"
                      
                       required
                     />
                   </div>
-                  <div class="col-6">
-                    <label for="vehicle_type" class="form-label fw-bold"
-                      >Code :</label
-                    >
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="inputNanme4"
-                      placeholder="Enter Code"
-                      name="code"
-                     
-                     
-                    />
-                  </div>
+                 
 
-                  <div class="col-12">
+                  <div class="col-6">
                     <label for="product_name" class="form-label fw-bold"
                       >Product Name :</label
                     >
@@ -142,58 +138,23 @@ if(isset($_POST['submit'])) {
                     
                   </div>
 
-                  <div class="col-6">
-                    <label for="vehicle_owner" class="form-label fw-bold"
-                      >Product Group :</label
-                    >
-                    <select name="product_group" class="form-select" >
-                      <option selected>Choose Group</option>
-                      <option value="OWN">OWN</option>
-                      <option value="OUTSIDE">OUTSIDE</option>
-                    </select>
-                  </div>
-
+                 
                   
                   <div class="col-6">
                     <label for="unit" class="form-label fw-bold"
                       >Product Unit :</label
                     >
                     <select name="unit" class="form-select" >
-                      <option selected>Choose Unit</option>
-                      <option value="OWN">OWN</option>
-                      <option value="OUTSIDE">OUTSIDE</option>
+                    
+                      <option value="MT">MT</option>
+                    
                     </select>
                   </div>
 
 
-                  <div class="col-6">
-                    <label for="cgst" class="form-label fw-bold"
-                      >CGST (%) :</label
-                    >
-                    <input
-                      type="number"
-                      class="form-control"
-                      name="cgst"
-                      placeholder="Enter CGST (%)"
-                     
-                    />
-                  </div>
-
+                 
 
  
-                  <div class="col-6">
-                    <label for="sgst" class="form-label fw-bold"
-                      >SGST (%) :</label
-                    >
-                    <input
-                      type="number"
-                      class="form-control"
-                      name="sgst"
-                      placeholder="Enter CGST (%)"
-                     
-                    />
-                  </div>
-
 
                   <div class="col-6">
                     <label for="rate" class="form-label fw-bold"
@@ -214,7 +175,7 @@ if(isset($_POST['submit'])) {
 
                   <div class="col-6">
                     <label for="qty" class="form-label fw-bold"
-                      >Opening Qty :</label
+                      >Qty :</label
                     >
                     <input
                       type="number"
@@ -225,35 +186,10 @@ if(isset($_POST['submit'])) {
                     />
                   </div>
 
-                  <div class="col-6">
-                    <label for="hsn" class="form-label fw-bold"
-                      >HSN/SAC Code :</label
-                    >
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="inputNanme4"
-                      name="hsn"
-                      placeholder="Enter HSN/SAC Code"
-                     
-                    />
-                  </div>
+              
+
 
                   <div class="col-6">
-                    <label for="godown" class="form-label fw-bold"
-                      >Godown :</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="inputNanme4"
-                      name="godown"
-                      placeholder="Enter Godown"
-                    
-                    />
-                  </div>
-
-                  <div class="col-12">
                     <label for="remarks" class="form-label fw-bold"
                       >Remarks :</label
                     >
