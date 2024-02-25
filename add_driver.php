@@ -128,8 +128,7 @@ insertDriverData($conn, $driverData);
     ];
     insertJoiningDetails($conn, $driverID, $joiningDetails);
     
-    // Redirect or show success message
-    header("Location: success.php");
+    echo "<script>alert('Driver Added Successfully!');</script>";
     exit();
 }
 ?>

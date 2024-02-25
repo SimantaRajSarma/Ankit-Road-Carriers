@@ -212,7 +212,7 @@ function deleteConfirm(obj){
                 <td><?php echo $row['opening_quantity'];?></td>
                 <td><?php echo $row['hsn_sac_code'];?></td>
                 <!-- <td></td> -->
-                <td><button  class="btn btn-secondary"><i class="fa-solid fa-lock ms-auto"></i></button></td>
+                <td><button  class="btn btn-danger"><i class="fa-solid fa-lock ms-auto"></i></button></td>
 
             </tr>
            

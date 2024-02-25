@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(0);
 require_once("include/connection.php");
 
 if(isset($_POST['submit'])) {
@@ -33,8 +33,8 @@ if(isset($_POST['submit'])) {
         $alertClass = "alert-danger";
         $alertMessage = "Please fill in all required fields";
     }
-
-    header('Location: success.php');
+    
+    echo "<script>alert('Product Added Successfully!');</script>";
     exit();
 
 }

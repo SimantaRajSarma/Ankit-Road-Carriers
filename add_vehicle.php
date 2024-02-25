@@ -155,20 +155,18 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
   // Call the function to insert data into the VehicleDocument table
   $result = insertVehicleDocumentData($conn, $lastVehicleID, $documentType, $documentName, $remarks, $filePaths);
 
-  // Handle the result accordingly
-  echo $result;
+  echo "<script>alert('$result');</script>";
 } else {
-  // Handle case where the 'document_files' array is not set or null
-  echo "Error: No files were uploaded.";
-  exit; // or return an error message, or redirect the user
+
+  $error = "Error: No files were uploaded.";
+  echo "<script>alert('$error');</script>";
+  
+  exit;
 }
 
 
     // Close database connection
     $conn->close();
-     
-    header("Location: success.php");
-    exit();
 }
 ?>
 

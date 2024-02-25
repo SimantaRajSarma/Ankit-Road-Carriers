@@ -1,8 +1,8 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 date_default_timezone_set('Asia/Kolkata');
-// error_reporting(0);
+error_reporting(0);
 require_once('include/connection.php');
 include('pages/trip_search_functions.php');
 
@@ -184,10 +184,10 @@ JOIN
 
     /* CSS for the search form */
 .search-form {
-    max-width: 800px;
+    max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #ECF2FF;
+    background-color: #f9f9f9;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -320,13 +320,7 @@ function deleteConfirm(obj){
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="party_bill_no">Bill No:</label>
-                <input type="text" class="form-control fw-bold" id="party_bill_no" name="party_bill_no" value="ARC/138129/2023-2024" readonly>
-            </div>
-        </div>
-        <div class="col-md-6 pt-3">
+        <div class="col-md-12">
             <button type="submit" class="btn btn-lg btn-primary"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;&nbsp;Search</button>
         </div>
     </div>
@@ -357,7 +351,37 @@ function deleteConfirm(obj){
             </tr>
         </thead>
         <tbody>
-           
+            <?php 
+            $rank = 1; 
+            // Assuming $result contains the result of the SQL query
+            while($row = mysqli_fetch_assoc($result)) {
+            ?>
+                <tr>
+                    <td class="px-5"><b><?php echo $rank; ?></b></td>
+                    <td class="px-5"><?php echo $row['vehicle_no']; ?></td>
+                    <td class="px-5"><?php echo $row['lr_no']; ?></td>
+                    <td class="px-5"><?php echo $row['lr_date']; ?></td>
+                    <td class="px-5"><?php echo $row['source']; ?></td>
+                    <td class="px-5"><?php echo $row['destination']; ?></td>
+                    <td class="px-5"><?php echo $row['bill_mode']; ?></td>
+                    <td class="px-5"><?php echo $row['loading_wt']; ?></td>
+                    <td class="px-5"><?php echo $row['unload_wt']; ?></td>
+                    <td class="px-5"><?php echo $row['party_rate']; ?></td>
+                    <td class="px-5"><?php echo $row['trptr_rate']; ?></td>
+                    <td class="px-5"><?php echo $row['vehicle_owner_type']; ?></td>
+                    <td class="px-5"><?php echo $row['driver_name']; ?></td>
+                    <td class="px-5"><?php echo $row['party_name']; ?></td>
+                    <td class="px-5"><?php echo $row['product_name']; ?></td>
+                    <td>
+                        <button class="btn btn-danger">
+                            <i class="fa-solid fa-lock ms-auto"></i>
+                        </button>
+                    </td>
+                </tr>
+            <?php 
+                $rank++; 
+            } 
+            ?>
         </tbody>
     </table>
 </div>
@@ -393,71 +417,8 @@ include('include/footer.php');
   <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
    <script src="assets/vendor/sweetalert2/sweetalert2.all.min.js"></script>
 
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
 
-   <script>
-    $(document).ready(function() {
-    // Listen for form submission
-    $('.search-form').submit(function(event) {
-        // Prevent the form from submitting by default
-        event.preventDefault();
-        
-        // Get the form data
-        var formData = $(this).serialize();
-        
-        // Send AJAX request to search.php
-        $.ajax({
-            type: 'POST',
-            url: 'search.php',
-            data: formData,
-            dataType: 'json',
-            success: function(response) {
-                // Update the table with the received results
-                updateTable(response);
-                console.dir(response);
-            },
-            error: function(xhr, status, error) {
-                // Handle errors
-                console.error(xhr.responseText);
-            }
-        });
-    });
-    
-    // Function to update the table with search results
-    function updateTable(data) {
-        var tableBody = $('.datatable tbody');
-        tableBody.empty(); // Clear existing rows
-        
-        // Iterate through the search results and append rows to the table
-        $.each(data, function(index, row) {
-            var newRow = `<tr>
-                <td class="px-5">${index + 1}</td>
-                <td class="px-5">${row.vehicle_no}</td>
-                <td class="px-5">${row.lr_no}</td>
-                <td class="px-5">${row.lr_date}</td>
-                <td class="px-5">${row.source}</td>
-                <td class="px-5">${row.destination}</td>
-                <td class="px-5">${row.bill_mode}</td>
-                <td class="px-5">${row.loading_wt}</td>
-                <td class="px-5">${row.unload_wt}</td>
-                <td class="px-5">${row.party_rate}</td>
-                <td class="px-5">${row.trptr_rate}</td>
-                <td class="px-5">${row.vehicle_owner_type}</td>
-                <td class="px-5">${row.driver_name}</td>
-                <td class="px-5">${row.party_name}</td>
-                <td class="px-5">${row.product_name}</td>
-                <td>
-                <button class="btn btn-danger">
-                    <i class="fa-solid fa-lock ms-auto"></i>
-                </button>
-                </td>
-             </tr>`;
-
-            tableBody.append(newRow);
-        });
-    }
-});
-   </script>
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>

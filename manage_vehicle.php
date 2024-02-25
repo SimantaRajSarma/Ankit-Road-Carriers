@@ -211,7 +211,7 @@ function deleteConfirm(obj){
                 <td><?php echo $row['OwnerType'];?></td>
                 <td><?php echo $row['VehicleOwner'];?></td>
                 <td></td>
-                <td><button  class="btn btn-secondary"><i class="fa-solid fa-lock ms-auto"></i></button></td>
+                <td><button  class="btn btn-danger"><i class="fa-solid fa-lock ms-auto"></i></button></td>
                 <!-- <i class="fa-solid fa-trash"></i>onclick="javascript: deleteConfirm('delete_data.php?id=<?php echo $row['VehicleID'];?>');" -->
             </tr>
            

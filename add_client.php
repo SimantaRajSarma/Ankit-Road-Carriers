@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(0);
 require_once("include/connection.php");
 
 if(isset($_POST['submit'])) {
@@ -27,7 +27,8 @@ if(isset($_POST['submit'])) {
         $alertMessage = "Please fill in all required fields";
     }
 
-
+    echo "<script>alert('Client Added Successfully!');</script>";
+    exit();
 
 }
 ?>

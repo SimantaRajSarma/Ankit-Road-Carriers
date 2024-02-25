@@ -193,7 +193,7 @@ function deleteConfirm(obj){
                 <th scope="col">Mobile No</th>
                 <th scope="col">Email</th>
                 <th scope="col">Address</th>
-               
+            
                 <th width="15%">Action</th>
               </tr>
             </thead>
@@ -209,9 +209,8 @@ function deleteConfirm(obj){
                 <td><?php echo $row['contact_email'];?></td>
                 <td><?php echo $row['address'];?></td>
             
-                <td><button  class="btn btn-warning btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button  class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button></td>
-
+                <td><button class="btn btn-danger"><i class="fa-solid fa-lock ms-auto"></i></button></td>
+               <!-- <td><button  class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></button> -->
             </tr>
            
                 <?php $rank++; }?>

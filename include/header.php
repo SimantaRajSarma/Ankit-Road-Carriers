@@ -2,9 +2,9 @@
 <header id="header" class="header fixed-top d-flex align-items-center">
 
 <div class="d-flex align-items-center justify-content-between">
-  <a href="s-dashboard.php" class="logo d-flex align-items-center">
+  <a href="dashboard.php" class="logo d-flex align-items-center">
     
-    <span class="d-none d-lg-block">Logistics Software</span>
+    <span class="d-none d-lg-block">Ankit Road Carrier</span>
   </a>
   <i class="bi bi-list toggle-sidebar-btn"></i>
 </div><!-- End Logo -->
@@ -48,13 +48,13 @@
       <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
         <!--<img src="../centre/images/6002957819_16887906934711_dp.jpg" alt="Profile" class="rounded-circle">-->
        
-        <span class="d-none d-md-block dropdown-toggle ps-2">Logistics Software</span>
+        <span class="d-none d-md-block dropdown-toggle ps-2">Ankit Road Carrier</span>
 
       </a><!-- End Profile Iamge Icon -->
 
       <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
         <li class="dropdown-header">
-          <h6>Logistics Software</h6>
+          <h6>Ankit Road Carrier</h6>
           <span>Admin </span>
         </li>
         <li>
@@ -115,7 +115,7 @@
 
       <li class="nav-item">
         <a class="nav-link " href="dashboard.php">
-          <i class="bi bi-grid"></i>
+        <i class="fa-solid fa-table-cells"></i>
           <span>Dashboard</span>
         </a>
       </li>
@@ -123,7 +123,7 @@
       
       <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-            <i class="fa-solid fa-truck"></i><span>Vehicle Management</span><i class="bi bi-chevron-down ms-auto"></i>
+            <i class="fa-solid fa-truck"></i><span>Vehicle Management</span><i class="fa-solid fa-chevron-down ms-auto"></i>
             </a>
             <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 
@@ -150,7 +150,7 @@
 
                 <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#components-nav4" data-bs-toggle="collapse" href="#">
-            <i class="fa-solid fa-user"></i><span>Driver Management</span><i class="bi bi-chevron-down ms-auto"></i>
+            <i class="fa-solid fa-user"></i><span>Driver Management</span><i class="fa-solid fa-chevron-down ms-auto"></i>
             </a>
             <ul id="components-nav4" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 
@@ -177,7 +177,7 @@
 
                 <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#components-nav7" data-bs-toggle="collapse" href="#">
-            <i class="fa-solid fa-box"></i><span>Product Management</span><i class="bi bi-chevron-down ms-auto"></i>
+            <i class="fa-solid fa-box"></i><span>Product Management</span><i class="fa-solid fa-chevron-down ms-auto"></i>
             </a>
             <ul id="components-nav7" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 
@@ -204,7 +204,7 @@
      
                 <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#components-nav8" data-bs-toggle="collapse" href="#">
-            <i class="fa-solid fa-face-smile"></i><span>Client Management</span><i class="bi bi-chevron-down ms-auto"></i>
+            <i class="fa-solid fa-face-smile"></i><span>Client Management</span><i class="fa-solid fa-chevron-down ms-auto"></i>
             </a>
             <ul id="components-nav8" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 
@@ -242,23 +242,23 @@
 
 
             <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#" data-bs-toggle="collapse" href="#">
-            <i class="fa-solid fa-paste"></i><span>Reports</span><i class="fa-solid fa-lock ms-auto"></i>
+            <a class="nav-link collapsed" data-bs-target="#reports-nav" data-bs-toggle="collapse" href="#">
+            <i class="fa-solid fa-paste"></i><span>Reports</span><i class="fa-solid fa-chevron-down ms-auto"></i>
             </a>
-            <ul id="#" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="reports-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 
                   <li class="nav-item">
-            <a class="nav-link collapsed" href="add_vehicle.php">
+            <a class="nav-link collapsed" href="trip_list.php">
             <i class="fa-solid fa-circle-plus"></i>
-              <span>LR Report</span>
+              <span>Trip List</span>
             </a>
           </li><!-- End Register Page Nav -->
           
                 
                   <li class="nav-item">
-            <a class="nav-link collapsed" href="manage_vehicle.php">
+            <a class="nav-link collapsed" href="party_bill_list.php">
             <i class="fa-solid fa-bars-progress"></i>
-              <span>Something..</span>
+              <span>Party Bill List</span>
             </a>
           </li><!-- End Register Page Nav -->
                
@@ -274,7 +274,7 @@
           </li>
 
       <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" href="logout.php">
             <i class="fa-solid fa-right-from-bracket"></i>
               <span>Log Out</span>
             </a>
