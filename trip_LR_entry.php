@@ -237,7 +237,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-6 col-sm-12">
                 <label for="product_name" class="form-label fw-bold">Product Name :</label>
                 <select name="product_name" class="form-select" required>
                     <option selected disabled>Select product...</option>
