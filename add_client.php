@@ -1,6 +1,17 @@
 <?php
+
+
+
+
 error_reporting(0);
-require_once("include/connection.php");
+
+session_start();
+include("include/connection.php");
+
+if (!isset($_SESSION["admin_id"])) {
+    header("location:login.php");
+    exit();
+}
 
 if(isset($_POST['submit'])) {
     $alertClass = ""; // Initialize the alert class

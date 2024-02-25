@@ -4,7 +4,13 @@ date_default_timezone_set('Asia/Kolkata');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 // error_reporting(0);
-require_once('include/connection.php');
+session_start();
+include("include/connection.php");
+
+if (!isset($_SESSION["admin_id"])) {
+    header("location:login.php");
+    exit();
+}
 include('pages/fetch_data.php');
 
 

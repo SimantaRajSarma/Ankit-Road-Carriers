@@ -1,12 +1,12 @@
 <?php
-// session_start();
+
+session_start();
 include("include/connection.php");
 
-// if (!isset($_SESSION["admin_id"])) {
-//     header("location:index.php");
-//     exit();
-// }
-
+if (!isset($_SESSION["admin_id"])) {
+    header("location:login.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>

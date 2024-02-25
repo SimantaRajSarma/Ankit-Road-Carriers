@@ -3,9 +3,17 @@
 // ini_set('display_errors', 1);
 date_default_timezone_set('Asia/Kolkata');
 error_reporting(0);
-require_once('include/connection.php');
+
 include('pages/trip_search_functions.php');
 
+
+session_start();
+include("include/connection.php");
+
+if (!isset($_SESSION["admin_id"])) {
+    header("location:login.php");
+    exit();
+}
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

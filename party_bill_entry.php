@@ -1,6 +1,11 @@
 <?php
-require_once('include/connection.php');
+session_start();
+include("include/connection.php");
 
+if (!isset($_SESSION["admin_id"])) {
+    header("location:login.php");
+    exit();
+}
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
