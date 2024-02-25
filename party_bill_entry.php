@@ -7,40 +7,6 @@ require_once('include/connection.php');
 include('pages/trip_search_functions.php');
 
 
-function generateBillNo($conn) {
-    // Get the current year
-    $currentYear = date("Y");
-    
-    // Determine the session based on the current month
-    $currentMonth = date("n");
-    if ($currentMonth >= 4 && $currentMonth <= 12) {
-        $session = $currentYear . '-' . ($currentYear + 1);
-    } else {
-        $session = ($currentYear - 1) . '-' . $currentYear;
-    }
-    
-    // Generate a random 6-7 digit number
-    $randomDigits = mt_rand(100000, 9999999);
-
-     // Check if the LR number already exists in the database
-   $sql = "SELECT trip_id, lr_no FROM trip_entry WHERE lr_no = ?";
-   $stmt = $conn->prepare($sql);
-   $stmt->bind_param("s", $randomDigits);
-   $stmt->execute();
-   $result = $stmt->get_result();
-   
-   if ($result->num_rows > 0) {
-        generateBillNo($conn);
-   }
-    
-    // Concatenate the parts to form the bill number
-    $billNo = "ARC/{$randomDigits}/{$session}";
-    
-    return $billNo;
-}
-
-$billNo = generateBillNo();
-
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -109,7 +75,7 @@ JOIN
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Trip List</title>
+  <title>Party Bill</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -290,7 +256,7 @@ include('include/header.php');
 <main id="main" class="main">
 
 <div class="pagetitle">
-  <h1>Trip Lists</h1>
+  <h1>Party Bill</h1>
   <nav>
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
@@ -358,7 +324,7 @@ function deleteConfirm(obj){
         <div class="col-md-6">
             <div class="form-group">
                 <label for="party_bill_no">Bill No:</label>
-                <input type="text" class="form-control fw-bold" id="party_bill_no" name="party_bill_no" value="<?= $billNo; ?>" readonly>
+                <input type="text" class="form-control fw-bold" id="party_bill_no" name="party_bill_no" value="" readonly>
             </div>
         </div>
         <div class="col-md-6 pt-3">
