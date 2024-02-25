@@ -7,8 +7,7 @@ ini_set('display_errors', 1);
 require_once('include/connection.php');
 include('pages/fetch_data.php');
 
-    // Generate LR number
-  $lr_number = generateLRNumber($conn);
+
   
   
  // Function to store trip data into the trip_entry table
@@ -192,7 +191,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 type="number"
                     name="lr_number"
                     class="form-control"
-                    value="<?= $lr_number; ?>"
+                    value=""
                     readonly
                 />
             </div>

@@ -1,27 +1,5 @@
 <?php
 
-function generateLRNumber($conn) {
-     // Generate a random 6-8 digit number
-     $randomDigits = mt_rand(100000, 99999999);
-     
-     // Concatenate the parts to form the LR number
-     $lrNumber = "{$randomDigits}";
-    
-    // Check if the LR number already exists in the database
-    $sql = "SELECT trip_id, lr_no FROM trip_entry WHERE lr_no = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $lrNumber);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    // If the LR number already exists, generate a new LR number
-    if ($result->num_rows > 0) {
-        generateLRNumber($conn); // Recursive call to generate a new LR number
-    }
-    
-    return $lrNumber;
-}
-
 
   // Function to fetch vehicle numbers and IDs from the database
 function fetchVehicles($conn) {
