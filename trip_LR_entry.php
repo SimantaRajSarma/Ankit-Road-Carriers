@@ -1,12 +1,15 @@
 <?php
 date_default_timezone_set('Asia/Kolkata');
 
-error_reporting(0);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+// error_reporting(0);
 require_once('include/connection.php');
 include('pages/fetch_data.php');
 
     // Generate LR number
-  $lr_number = generateLRNumber();
+  $lr_number = generateLRNumber($conn);
+  
   
  // Function to store trip data into the trip_entry table
 function storeTripData($conn, $data) {
@@ -178,7 +181,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
     
-<div class="col-3">
+            <div class="col-3">
                 <label for="lr_number" class="form-label fw-bold">LR No :</label>
                 <input
                 type="number"
