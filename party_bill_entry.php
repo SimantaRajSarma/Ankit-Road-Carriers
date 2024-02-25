@@ -7,6 +7,41 @@ require_once('include/connection.php');
 include('pages/trip_search_functions.php');
 
 
+function generateBillNo($conn) {
+    // Get the current year
+    $currentYear = date("Y");
+    
+    // Determine the session based on the current month
+    $currentMonth = date("n");
+    if ($currentMonth >= 4 && $currentMonth <= 12) {
+        $session = $currentYear . '-' . ($currentYear + 1);
+    } else {
+        $session = ($currentYear - 1) . '-' . $currentYear;
+    }
+    
+    // Generate a random 6-7 digit number
+    $randomDigits = mt_rand(100000, 9999999);
+
+     // Check if the LR number already exists in the database
+   $sql = "SELECT trip_id, lr_no FROM trip_entry WHERE lr_no = ?";
+   $stmt = $conn->prepare($sql);
+   $stmt->bind_param("s", $randomDigits);
+   $stmt->execute();
+   $result = $stmt->get_result();
+   
+   if ($result->num_rows > 0) {
+        generateBillNo($conn);
+   }
+    
+    // Concatenate the parts to form the bill number
+    $billNo = "ARC/{$randomDigits}/{$session}";
+    
+    return $billNo;
+}
+
+$billNo = generateBillNo();
+
+
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $partyID = isset($_POST['party_id']) ? $_POST['party_id'] : 'none';
@@ -323,7 +358,7 @@ function deleteConfirm(obj){
         <div class="col-md-6">
             <div class="form-group">
                 <label for="party_bill_no">Bill No:</label>
-                <input type="text" class="form-control fw-bold" id="party_bill_no" name="party_bill_no" value="ARC/138129/2023-2024" readonly>
+                <input type="text" class="form-control fw-bold" id="party_bill_no" name="party_bill_no" value="<?= $billNo; ?>" readonly>
             </div>
         </div>
         <div class="col-md-6 pt-3">
@@ -353,6 +388,11 @@ function deleteConfirm(obj){
                 <th scope="col" class="px-5">Driver Name</th>
                 <th scope="col" class="px-5">Party Name</th>
                 <th scope="col" class="px-5">Product Name</th>
+                <th scope="col" class="px-5">Consignor Name</th>
+                <th scope="col" class="px-5">Consignor Mobile</th>
+                <th scope="col" class="px-5">Consignee Name</th>
+                <th scope="col" class="px-5">Consignor Mobile</th>
+
                 <th scope="col" class="px-5" >Action</th>
             </tr>
         </thead>
@@ -446,6 +486,12 @@ include('include/footer.php');
                 <td class="px-5">${row.driver_name}</td>
                 <td class="px-5">${row.party_name}</td>
                 <td class="px-5">${row.product_name}</td>
+                <td class="px-5">${row.consignor_name}</td>
+                <td class="px-5">${row.consignor_mobile}</td>
+                <td class="px-5">${row.consignee_name}</td>
+                <td class="px-5">${row.consignee_mobile}</td>
+                
+
                 <td>
                 <button class="btn btn-danger">
                     <i class="fa-solid fa-lock ms-auto"></i>
