@@ -225,7 +225,7 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
                   enctype="multipart/form-data"
                   action=""
                 >
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="vehicle_no" class="form-label fw-bold"
                       >Vehicle No. :</label
                     >
@@ -238,7 +238,7 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
                       required
                     />
                   </div>
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="vehicle_type" class="form-label fw-bold"
                       >Vehicle Type :</label
                     >
@@ -248,7 +248,7 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
                     </select>
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="owner_type" class="form-label fw-bold"
                       >Owner Type :</label
                     >
@@ -259,7 +259,7 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
                     </select>
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="vehicle_owner" class="form-label fw-bold"
                       >Vehicle Owner :</label
                     >
@@ -272,7 +272,7 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="capacity" class="form-label fw-bold"
                       >Capacity :</label
                     >
@@ -285,7 +285,7 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="vehicle_model_type" class="form-label fw-bold"
                       >Vehicle Model Type :</label
                     >
@@ -295,7 +295,7 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
                     </select>
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="pan_name" class="form-label fw-bold"
                       >Name of PAN :</label
                     >
@@ -309,7 +309,7 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="pan_card_no" class="form-label fw-bold"
                       >PAN Card No. :</label
                     >

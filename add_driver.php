@@ -189,7 +189,7 @@ insertDriverData($conn, $driverData);
                   enctype="multipart/form-data"
                   action=""
                 >
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="driver_name" class="form-label fw-bold"
                       >Driver Name :</label
                     >
@@ -201,7 +201,7 @@ insertDriverData($conn, $driverData);
                       required
                     />
                   </div>
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="driver_photo" class="form-label fw-bold"
                       >Driver Photo :</label
                     >
@@ -213,7 +213,7 @@ insertDriverData($conn, $driverData);
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="permanent_address" class="form-label fw-bold"
                       >Address(P) :</label
                     >
@@ -224,7 +224,7 @@ insertDriverData($conn, $driverData);
                     ></textarea>
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="temporary_address" class="form-label fw-bold"
                       >Address(T) :</label
                     >
@@ -235,7 +235,7 @@ insertDriverData($conn, $driverData);
                     ></textarea>
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="mobile_number" class="form-label fw-bold"
                       >Mobile No. :</label
                     >
@@ -248,7 +248,7 @@ insertDriverData($conn, $driverData);
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="guarantor_name" class="form-label fw-bold"
                       >Guarantor Name :</label
                     >
@@ -259,7 +259,7 @@ insertDriverData($conn, $driverData);
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="guarantor_mobile_no" class="form-label fw-bold"
                       >Guarantor Mobile No. :</label
                     >
@@ -270,7 +270,7 @@ insertDriverData($conn, $driverData);
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="license_no" class="form-label fw-bold"
                       >License No. :</label
                     >
@@ -283,7 +283,7 @@ insertDriverData($conn, $driverData);
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="license_issue_date" class="form-label fw-bold"
                       >License issue date. :</label
                     >
@@ -295,7 +295,7 @@ insertDriverData($conn, $driverData);
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="license_expiry_date" class="form-label fw-bold"
                       >License Expiry date. :</label
                     >
@@ -307,7 +307,7 @@ insertDriverData($conn, $driverData);
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="haz_expiry_date" class="form-label fw-bold"
                       >HAZ Expiry date. :</label
                     >
@@ -319,7 +319,7 @@ insertDriverData($conn, $driverData);
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6 col-sm-12">
                     <label for="haz_license_no" class="form-label fw-bold"
                       >HAZ License no. :</label
                     >
@@ -331,7 +331,7 @@ insertDriverData($conn, $driverData);
                     />
                   </div>
 
-                  <div class="col-8">
+                  <div class="col-md-6 col-sm-12">
                     <label for="opening_balance" class="form-label fw-bold"
                       >Opening Balance :</label
                     >
@@ -342,7 +342,7 @@ insertDriverData($conn, $driverData);
                       required
                     />
                   </div>
-                  <div class="col-4">
+                  <div class="col-md-6 col-sm-12">
                     <label for="cr_dr" class="form-label fw-bold">Type:</label>
                     <select name="cr_dr" class="form-select">
                       <option selected></option>
