@@ -1,69 +1,78 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-date_default_timezone_set('Asia/Kolkata');
-// error_reporting(0);
 require_once('include/connection.php');
-include('pages/trip_search_functions.php');
-
-
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $partyID = isset($_POST['party_id']) ? $_POST['party_id'] : 'none';
-  $fromDate = $_POST['fdate'];
-  $toDate = $_POST['tdate'];
+    // Retrieve form data
+    $partyName = $_POST['party_name'];
+    $fromDate = $_POST['fdate'];
+    $toDate = $_POST['tdate'];
 
-  if ($partyID != 'none' && !empty($fromDate) && !empty($toDate)) {
-      $result = fetchTripsByPartyAndDate($conn, $partyID, $fromDate, $toDate);
-  }
-  
-  elseif ($partyID != 'none' && empty($fromDate) && empty($toDate)) {
-      $result = fetchTripsByParty($conn, $partyID);
-  }
- 
-  elseif ($partyID == 'none' && !empty($fromDate) && !empty($toDate)) {
-      $result = fetchTripsByDate($conn, $fromDate, $toDate);
-  }
- 
-  else {
-      echo "<script>alert('Please select at least one search criteria.');</script>";
-  }
-
-}
-
-
-    // SQL query to retrieve all data from the vehicle table
+    // Construct SQL query with search criteria
     $sql = "SELECT 
-    trip_entry.trip_id,
-    trip_entry.lr_no,
-    trip_entry.lr_date,
-    trip_entry.source,
-    trip_entry.destination,
-    trip_entry.bill_mode,
-    trip_entry.loading_wt,
-    trip_entry.unload_wt,
-    trip_entry.party_rate,
-    trip_entry.trptr_rate,
-    vehicle.VehicleNo AS vehicle_no,
-    vehicle.OwnerType AS vehicle_owner_type,
-    driver.DriverName AS driver_name,
-    party.party_name,
-    products.product_name
-FROM 
-    trip_entry
-JOIN 
-    vehicle ON trip_entry.vehicle_id = vehicle.VehicleID
-JOIN 
-    driver ON trip_entry.driver_id = driver.DriverID
-JOIN 
-    party ON trip_entry.party_id = party.party_id
-JOIN 
-    products ON trip_entry.product_id = products.product_id";
+        trip_entry.trip_id,
+        trip_entry.lr_no,
+        trip_entry.lr_date,
+        trip_entry.source,
+        trip_entry.destination,
+        trip_entry.bill_mode,
+        trip_entry.loading_wt,
+        trip_entry.unload_wt,
+        trip_entry.party_rate,
+        trip_entry.trptr_rate,
+        vehicle.VehicleNo AS vehicle_no,
+        vehicle.OwnerType AS vehicle_owner_type,
+        driver.DriverName AS driver_name,
+        party.party_name,
+        products.product_name
+    FROM 
+        trip_entry
+    JOIN 
+        vehicle ON trip_entry.vehicle_id = vehicle.VehicleID
+    JOIN 
+        driver ON trip_entry.driver_id = driver.DriverID
+    JOIN 
+        party ON trip_entry.party_id = party.party_id
+    JOIN 
+        products ON trip_entry.product_id = products.product_id
+    WHERE 1";
+
+    // Add search criteria to SQL query
+    if (!empty($partyName)) {
+        $sql .= " AND party.party_name LIKE '%$partyName%'";
+    }
+    if (!empty($fromDate)) {
+        $sql .= " AND trip_entry.lr_date >= '$fromDate'";
+    }
+    if (!empty($toDate)) {
+        $sql .= " AND trip_entry.lr_date <= '$toDate'";
+    }
 
     // Execute the query
     $result = $conn->query($sql);
+    
+    // Check for errors
+    if (!$result) {
+        die("Error: " . $conn->error);
+    }
+}
 
+// Check if the form is submitted for inserting into the "bil" table
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+    // Retrieve form data
+    $tripId = $_POST['trip_id']; // Assuming you capture the trip_id from the form
+    
+    // Perform the insertion into the "bil" table
+    // Example SQL query (replace with your actual table structure and data)
+    $sqlInsert = "INSERT INTO bills (trip_id,) VALUES ('$tripId')";
+    
+    // Execute the insertion query
+    if ($conn->query($sqlInsert) === TRUE) {
+        echo "New record inserted successfully into bil table";
+    } else {
+        echo "Error: " . $sqlInsert . "<br>" . $conn->error;
+    }
+}
 ?>
 
 
@@ -292,33 +301,30 @@ function deleteConfirm(obj){
         <div class="card-body">
          <br>
          <div class="report">
+       
          <form method="post" action="" class="search-form">
     <div class="row">
-      <div class="col-md-4">
+        <div class="col-md-4">
             <div class="form-group">
-                <label for="courseSelect" >Select Party:</label>
-                <select id="courseSelect" name="party_id" class="form-select">
-                    <option value="none" selected disabled>Select a Party...</option>
-                    <?php 
-                    $party_data = fetchParty($conn);
-                        foreach ($party_data as $party): ?>
-                        <option value="<?= $party['id']; ?>"><?= $party['name']; ?></option>
-                    <?php endforeach; ?>
-                </select>
+                <label for="party_name">Party Name:</label>
+                <input type="text" class="form-control" id="party_name" name="party_name">
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="startDate">From:</label>
-                <input type="date" class="form-control" id="startDate" name="fdate" value="<?php echo date('Y-m-d'); ?>">
+                <label for="fdate">From:</label>
+                <input type="date" class="form-control" id="fdate" name="fdate" value="<?php echo date('Y-m-d'); ?>">
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="endDate">To:</label>
-                <input type="date" id="endDate" class="form-control" name="tdate" value="<?php echo date('Y-m-d'); ?>">
+                <label for="tdate">To:</label>
+                <input type="date" class="form-control" id="tdate" name="tdate" value="<?php echo date('Y-m-d'); ?>">
             </div>
         </div>
+    </div>
+    <div class="row">
+        <!-- Your existing form content -->
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -332,10 +338,10 @@ function deleteConfirm(obj){
         </div>
     </div>
 </form>
- </div>
+
  <br>
           <!-- Table with stripped rows -->
-<div class="table-responsive">
+          <div class="table-responsive">
     <table class="table datatable table-hover">
         <thead>
             <tr>
@@ -358,17 +364,60 @@ function deleteConfirm(obj){
                 <th scope="col" class="px-5">Consignor Mobile</th>
                 <th scope="col" class="px-5">Consignee Name</th>
                 <th scope="col" class="px-5">Consignor Mobile</th>
-
                 <th scope="col" class="px-5" >Action</th>
             </tr>
         </thead>
         <tbody>
-           
+        <?php
+// Check if $result is defined and not empty
+if (isset($result) && $result->num_rows > 0) {
+    $rowCount = 0;
+    while ($row = $result->fetch_assoc()) {
+        $rowCount++;
+?>
+        <tr>
+            <td class="px-5"><?php echo $rowCount; ?></td>
+            <td class="px-5"><?php echo $row['vehicle_no']; ?></td>
+            <td class="px-5"><?php echo $row['lr_no']; ?></td>
+            <td class="px-5"><?php echo $row['lr_date']; ?></td>
+            <td class="px-5"><?php echo $row['source']; ?></td>
+            <td class="px-5"><?php echo $row['destination']; ?></td>
+            <td class="px-5"><?php echo $row['bill_mode']; ?></td>
+            <td class="px-5"><?php echo $row['loading_wt']; ?></td>
+            <td class="px-5"><?php echo $row['unload_wt']; ?></td>
+            <td class="px-5"><?php echo $row['party_rate']; ?></td>
+            <td class="px-5"><?php echo $row['trptr_rate']; ?></td>
+            <td class="px-5"><?php echo $row['vehicle_owner_type']; ?></td>
+            <td class="px-5"><?php echo $row['driver_name']; ?></td>
+            <td class="px-5"><?php echo $row['party_name']; ?></td>
+            <td class="px-5"><?php echo $row['product_name']; ?></td>
+            <td class="px-5"><?php echo $row['consignor_name']; ?></td>
+            <td class="px-5"><?php echo $row['consignor_mobile']; ?></td>
+            <td class="px-5"><?php echo $row['consignee_name']; ?></td>
+            <td class="px-5"><?php echo $row['consignor_mobile']; ?></td>
+            <td class="px-5">
+                <button class="btn btn-danger">
+                    <i class="fa-solid fa-lock ms-auto"></i>
+                </button>
+            </td>
+        </tr>
+<?php 
+    }
+} else {
+    // Handle case where $result is empty or not defined
+    echo "<tr><td colspan='21'>No records found</td></tr>";
+}
+?>
+
         </tbody>
     </table>
 </div>
-<!-- End Table with stripped rows -->
 
+<br>
+<!-- End Table with stripped rows -->
+<div class="text-center">
+<button class="btn btn-primary text-center">Submit</button>
+                        </div>
         </div>
       </div>
 
@@ -400,76 +449,6 @@ include('include/footer.php');
    <script src="assets/vendor/sweetalert2/sweetalert2.all.min.js"></script>
 
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-   <script>
-    $(document).ready(function() {
-    // Listen for form submission
-    $('.search-form').submit(function(event) {
-        // Prevent the form from submitting by default
-        event.preventDefault();
-        
-        // Get the form data
-        var formData = $(this).serialize();
-        
-        // Send AJAX request to search.php
-        $.ajax({
-            type: 'POST',
-            url: 'search.php',
-            data: formData,
-            dataType: 'json',
-            success: function(response) {
-                // Update the table with the received results
-                updateTable(response);
-                console.dir(response);
-            },
-            error: function(xhr, status, error) {
-                // Handle errors
-                console.error(xhr.responseText);
-            }
-        });
-    });
-    
-    // Function to update the table with search results
-    function updateTable(data) {
-        var tableBody = $('.datatable tbody');
-        tableBody.empty(); // Clear existing rows
-        
-        // Iterate through the search results and append rows to the table
-        $.each(data, function(index, row) {
-            var newRow = `<tr>
-                <td class="px-5">${index + 1}</td>
-                <td class="px-5">${row.vehicle_no}</td>
-                <td class="px-5">${row.lr_no}</td>
-                <td class="px-5">${row.lr_date}</td>
-                <td class="px-5">${row.source}</td>
-                <td class="px-5">${row.destination}</td>
-                <td class="px-5">${row.bill_mode}</td>
-                <td class="px-5">${row.loading_wt}</td>
-                <td class="px-5">${row.unload_wt}</td>
-                <td class="px-5">${row.party_rate}</td>
-                <td class="px-5">${row.trptr_rate}</td>
-                <td class="px-5">${row.vehicle_owner_type}</td>
-                <td class="px-5">${row.driver_name}</td>
-                <td class="px-5">${row.party_name}</td>
-                <td class="px-5">${row.product_name}</td>
-                <td class="px-5">${row.consignor_name}</td>
-                <td class="px-5">${row.consignor_mobile}</td>
-                <td class="px-5">${row.consignee_name}</td>
-                <td class="px-5">${row.consignee_mobile}</td>
-                
-
-                <td>
-                <button class="btn btn-danger">
-                    <i class="fa-solid fa-lock ms-auto"></i>
-                </button>
-                </td>
-             </tr>`;
-
-            tableBody.append(newRow);
-        });
-    }
-});
-   </script>
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
