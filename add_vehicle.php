@@ -159,7 +159,7 @@ if(isset($_FILES['document_files']) && $_FILES['document_files'] !== null) {
 } else {
 
   $error = "Error: No files were uploaded.";
-  echo "<script>alert('$error');</script>";
+  echo "<script>alert('Vehicle Added Successfully!');</script>";
   
   exit;
 }
