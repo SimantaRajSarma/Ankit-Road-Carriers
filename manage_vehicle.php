@@ -219,7 +219,7 @@ function deleteConfirm(obj){
 
 <td>
          <button class="btn btn-danger btn-sm" onclick="deleteConfirm('delete_vehicle.php?vehicle_id=<?php echo $row['VehicleID'];?>')">
-                        <i class="bi bi-trash3"></i>
+         <i class="fa-solid fa-trash"></i>
                     </button>
 </td>
 

@@ -27,7 +27,7 @@ function fetchVehicles($conn) {
 
 // Function to fetch driver IDs and names from the database
 function fetchDriverData($conn) {
-    $sql = "SELECT DriverID, DriverName FROM driver";
+    $sql = "SELECT DriverID, DriverName, MobileNo FROM driver";
     $result = $conn->query($sql);
     $driver_data = [];
 
@@ -35,13 +35,15 @@ function fetchDriverData($conn) {
         while ($row = $result->fetch_assoc()) {
             $driver_data[] = array(
                 'id' => $row["DriverID"],
-                'name' => $row["DriverName"]
+                'name' => $row["DriverName"],
+                'phone' => $row["MobileNo"]
             );
         }
     } else {
         $driver_data[] = array(
             'id' => null,
-            'name' => "No drivers found"
+            'name' => "No drivers found",
+            'phone' => ''
         );
     }
 
