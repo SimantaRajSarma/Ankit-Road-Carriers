@@ -1,87 +1,199 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+// error_reporting(0);
+
 session_start();
 include("include/connection.php");
+include('pages/fetch_data.php');
+include('pages/party_bill_functions.php');
 
 if (!isset($_SESSION["admin_id"])) {
     header("location:login.php");
     exit();
 }
+
+
+// Function to generate a unique LR number
+function generateBillNumber($conn) {
+    
+    $query = "SELECT MAX(bill_number) AS max_bill_no FROM party_bill";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    $max_bill_no = $row['max_bill_no'];
+
+    if ($max_bill_no === null) {
+        return 1;
+    }
+
+    $next_bill_no = $max_bill_no + 1;
+
+    $query = "SELECT COUNT(*) AS count FROM party_bill WHERE bill_number = $next_bill_no";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    $count = $row['count'];
+
+    while ($count > 0) {
+        $next_bill_no++;
+        $query = "SELECT COUNT(*) AS count FROM party_bill WHERE bill_number = $next_bill_no";
+        $result = mysqli_query($conn, $query);
+        $row = mysqli_fetch_assoc($result);
+        $count = $row['count'];
+    }
+
+    // Return the unique LR number
+    return $next_bill_no;
+}
+
+$bill_number = generateBillNumber($conn);
+
+
+// Function to calculate total bill amount based on selected LR IDs
+function calculateBillAmount($conn, $lrIds) {
+    $totalAmount = 0;
+    
+    // Iterate through each selected LR ID
+    foreach ($lrIds as $lrId) {
+        // Query the freight amount for the LR ID from the trip_entry table
+        $sql = "SELECT bill_freight FROM trip_entry WHERE trip_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $lrId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        // If a record is found, add the freight amount to the total amount
+        if ($row = $result->fetch_assoc()) {
+            $totalAmount += $row['bill_freight'];
+        }
+        
+        $stmt->close();
+    }
+    
+    return $totalAmount;
+}
+
+
+// Function to insert data into party_bill table
+function insertPartyBill($conn, $bill_no, $partyId, $billAmount, $billDate) {
+    $sql = "INSERT INTO party_bill (bill_number, party_id, bill_amount, bill_date) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sids", $bill_no, $partyId, $billAmount, $billDate);
+    $stmt->execute();
+    $insertedBillId = $stmt->insert_id;
+    $stmt->close();
+    return $insertedBillId; // Return the ID of the inserted bill for further use
+}
+
+// Function to insert data into party_bill_lr table
+function insertPartyBillLR($conn, $billId, $lrIds) {
+    $sql = "INSERT INTO party_bill_lr (bill_id, lr_id) VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($lrIds as $lrId) {
+        $stmt->bind_param("ii", $billId, $lrId);
+        $stmt->execute();
+    }
+    $stmt->close();
+}
+
+
 // Check if the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $partyName = $_POST['party_name'];
-    $fromDate = $_POST['fdate'];
-    $toDate = $_POST['tdate'];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search'])) {
 
-    // Construct SQL query with search criteria
-    $sql = "SELECT 
-        trip_entry.trip_id,
-        trip_entry.lr_no,
-        trip_entry.lr_date,
-        trip_entry.source,
-        trip_entry.destination,
-        trip_entry.bill_mode,
-        trip_entry.loading_wt,
-        trip_entry.unload_wt,
-        trip_entry.party_rate,
-        trip_entry.trptr_rate,
-        trip_entry.consignor_name,
-        trip_entry.consignor_mobile,
-        trip_entry.consignee_name,
-        vehicle.VehicleNo AS vehicle_no,
-        vehicle.OwnerType AS vehicle_owner_type,
-        driver.DriverName AS driver_name,
-        party.party_name,
-        products.product_name
-    FROM 
-        trip_entry
-    JOIN 
-        vehicle ON trip_entry.vehicle_id = vehicle.VehicleID
-    JOIN 
-        driver ON trip_entry.driver_id = driver.DriverID
-    JOIN 
-        party ON trip_entry.party_id = party.party_id
-    JOIN 
-        products ON trip_entry.product_id = products.product_id
-    WHERE 1";
+$partyName = isset($_POST['party_name']) ? $_POST['party_name'] : '';
+$vehicleNumber = isset($_POST['vehicle_number']) ? $_POST['vehicle_number'] : '';
+$startDate = isset($_POST['start_date']) ? $_POST['start_date'] : '';
+$endDate = isset($_POST['end_date']) ? $_POST['end_date'] : '';
+$party_bill_no = isset($_POST['party_bill_no']) ? $_POST['party_bill_no'] : '';
+$party_bill_date = isset($_POST['party_bill_date']) ? $_POST['party_bill_date'] : '';
+ 
+// Store search criteria in session variables
+$_SESSION['search_criteria'] = [
+    'partyName' => $partyName,
+    'party_bill_no' => $party_bill_no,
+    'party_bill_date' => $party_bill_date
+];
 
-    // Add search criteria to SQL query
-    if (!empty($partyName)) {
-        $sql .= " AND party.party_name LIKE '%$partyName%'";
-    }
-    if (!empty($fromDate)) {
-        $sql .= " AND trip_entry.lr_date >= '$fromDate'";
-    }
-    if (!empty($toDate)) {
-        $sql .= " AND trip_entry.lr_date <= '$toDate'";
-    }
-
-    // Execute the query
-    $result = $conn->query($sql);
-    
-    // Check for errors
-    if (!$result) {
-        die("Error: " . $conn->error);
-    }
+    // Conditions
+if (!empty($partyName) && empty($vehicleNumber) && empty($startDate) && empty($endDate)) {
+    // Search by Party Name Only
+    $result = fetchTripsByPartyName($conn, $partyName);
+} elseif (empty($partyName) && !empty($vehicleNumber) && empty($startDate) && empty($endDate)) {
+    // Search by Vehicle Number Only
+    $result = fetchTripsByVehicle($conn, $vehicleNumber);
+} elseif (empty($partyName) && empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
+    // Search by Start Date and End Date Only
+    $result = fetchTripsByDate($conn, $startDate, $endDate);
+} elseif (!empty($partyName) && !empty($vehicleNumber) && empty($startDate) && empty($endDate)) {
+    // Search by Party Name and Vehicle Number
+    $result = fetchTripsByPartyNameAndVehicle($conn, $partyName, $vehicleNumber);
+} elseif (!empty($partyName) && empty($vehicleNumber) && !empty($startDate) && empty($endDate)) {
+    // Search by Party Name and Start Date
+    echo "<script>alert('Please provide additional search criteria.')</script>";
+} elseif (!empty($partyName) && empty($vehicleNumber) && empty($startDate) && !empty($endDate)) {
+    // Search by Party Name and End Date
+    echo "<script>alert('Please provide additional search criteria.')</script>";
+} elseif (empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && empty($endDate)) {
+    // Search by Vehicle Number and Start Date
+    echo "<script>alert('Please provide additional search criteria.')</script>";
+} elseif (empty($partyName) && !empty($vehicleNumber) && empty($startDate) && !empty($endDate)) {
+    // Search by Vehicle Number and End Date
+    echo "<script>alert('Please provide additional search criteria.')</script>";
+} elseif (!empty($partyName) && empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
+    // Search by Start Date, End Date, and Party Name
+    $result = fetchTripsByPartyNameAndDate($conn, $partyName, $startDate, $endDate);
+} elseif (empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
+    // Search by Start Date, End Date, and Vehicle Number
+    $result = fetchTripsByVehicleAndDate($conn, $vehicleNumber, $startDate, $endDate);
+} elseif (!empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && empty($endDate)) {
+    // Search by Party Name, Vehicle Number, and Start Date
+    $result = fetchTripsByPartyNameAndVehicle($conn, $partyName, $vehicleNumber);
+} elseif (!empty($partyName) && !empty($vehicleNumber) && empty($startDate) && !empty($endDate)) {
+    // Search by Party Name, Vehicle Number, and End Date
+    $result = fetchTripsByPartyNameAndVehicle($conn, $partyName, $vehicleNumber);
+} elseif (!empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
+    // Search by Party Name, Vehicle Number, Start Date, and End Date
+    $result = fetchTripsByPartyNameVehicleAndDate($conn, $partyName, $vehicleNumber, $startDate, $endDate);
+} else {
+    echo "<script>alert('Please provide at least one valid search criteria.')</script>";
 }
+  
+}
+ 
 
-// Check if the form is submitted for inserting into the "bil" table
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generate_bill'])) {
     // Retrieve form data
-    $tripId = $_POST['trip_id']; // Assuming you capture the trip_id from the form
-    
-    // Perform the insertion into the "bil" table
-    // Example SQL query (replace with your actual table structure and data)
-    $sqlInsert = "INSERT INTO bills (trip_id,) VALUES ('$tripId')";
-    
-    // Execute the insertion query
-    if ($conn->query($sqlInsert) === TRUE) {
-        echo "New record inserted successfully into bil table";
+    $searchCriteria = $_SESSION['search_criteria'] ?? [];
+
+     // Access individual search criteria
+     $partyName = $searchCriteria['partyName'];
+     $party_bill_no = $searchCriteria['party_bill_no'];
+     $party_bill_date = $searchCriteria['party_bill_date'];
+     $lrIds = isset($_POST['selectedLRs']) ? $_POST['selectedLRs'] : [];
+
+      // Calculate total bill amount
+    $billAmount = calculateBillAmount($conn, $lrIds);
+
+
+    // Insert data into party_bill table
+    $insertedBillId = insertPartyBill($conn, $party_bill_no, $partyName, $billAmount, $party_bill_date);
+
+    // Check if insertion into party_bill table was successful
+    if ($insertedBillId) {
+        // Insert data into party_bill_lr table
+        insertPartyBillLR($conn, $insertedBillId, $lrIds);
+
+        // Redirect to a success page or display a success message
+        echo "<script>alert('Bill generated successfully!');</script>";
     } else {
-        echo "Error: " . $sqlInsert . "<br>" . $conn->error;
+        // Handle insertion failure
+        echo "<script>alert('Failed to generate bill. Please try again.');</script>";
     }
+
+    // Clear the session variables after generating the bill
+    unset($_SESSION['search_criteria']);
 }
-?>
+ ?>
 
 
 
@@ -97,8 +209,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="https://ankitroadcarrier.in/logon33.jpg" rel="icon">
-  <link href="https://ankitroadcarrier.in/logon33.jpg" rel="apple-touch-icon">
+  <link href="https://ankitroadcarrier.in/logo.jpg" rel="icon">
+  <link href="https://ankitroadcarrier.in/logo.jpg" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -202,7 +314,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 
     /* CSS for the search form */
 .search-form {
-    max-width: 800px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 20px;
     background-color: #ECF2FF;
@@ -247,7 +359,10 @@ label {
 .btn-primary:hover {
     background-color: #0056b3;
 }
-
+.custom-checkbox {
+    width: 20px; 
+    height: 20px;
+}
     
     </style>
 
@@ -308,14 +423,20 @@ function deleteConfirm(obj){
         
         <div class="card-body">
          <br>
-         <div class="report">
        
          <form method="post" action="" class="search-form">
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
                 <label for="party_name">Party Name:</label>
-                <input type="text" class="form-control" id="party_name" name="party_name">
+                <select name="party_name" class="form-select" id="party_name">
+                    <option selected disabled>Select Party...</option>
+                    <?php 
+                    $party_list = fetchPartyData($conn);
+                        foreach ($party_list as $party): ?>
+                        <option value="<?= $party['id']; ?>"><?= $party['name']; ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
         </div>
         <div class="col-md-4">
@@ -332,17 +453,33 @@ function deleteConfirm(obj){
         </div>
     </div>
     <div class="row">
-        <!-- Your existing form content -->
-    </div>
-    <div class="row">
-        <div class="col-md-6">
+    <div class="col-md-4">
             <div class="form-group">
-                <label for="party_bill_no">Bill No:</label>
-                <input type="text" class="form-control fw-bold" id="party_bill_no" name="party_bill_no" value="" readonly>
+                <label for="vehicle_number">Vehicle No. :</label>
+                <select name="vehicle_number" class="form-select" id="vehicle_number">
+                    <option selected disabled>Select vehicle...</option>
+                    <?php 
+                    $vehicle_list = fetchVehicles($conn);
+                        foreach ($vehicle_list as $vehicle): ?>
+                        <option value="<?= $vehicle['id']; ?>"><?= $vehicle['number']; ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
         </div>
-        <div class="col-md-6 pt-3">
-            <button type="submit" class="btn btn-lg btn-primary"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;&nbsp;Search</button>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="party_bill_no">Bill No:</label>
+                <input type="text" class="form-control fw-bold" id="party_bill_no" name="party_bill_no" value="<?= $bill_number; ?>" readonly>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="party_bill_date">Bill Date:</label>
+                <input type="text" class="form-control fw-bold" id="party_bill_date" name="party_bill_date" value="<?php echo date('Y-m-d'); ?>" readonly>
+            </div>
+        </div>
+        <div class="col-md-12 pt-3 text-center">
+            <button type="submit" name="search" class="btn btn-lg btn-primary"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;&nbsp;Search</button>
         </div>
     </div>
 </form>
@@ -350,10 +487,12 @@ function deleteConfirm(obj){
  <br>
           <!-- Table with stripped rows -->
           <div class="table-responsive">
+          <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
     <table class="table datatable table-hover">
         <thead>
             <tr>
-                <th scope="col" class="px-5">#</th>
+            <th scope="col" class="px-5"></th>
+                <!-- <th scope="col" class="px-5">#</th> -->
                 <th scope="col" class="px-5">Vehicle No.</th>
                 <th scope="col" class="px-5">LR No.</th>
                 <th scope="col" class="px-5">LR Date</th>
@@ -379,12 +518,15 @@ function deleteConfirm(obj){
         <?php
 // Check if $result is defined and not empty
 if (isset($result) && $result->num_rows > 0) {
-    $rowCount = 0;
+    // $rowCount = 0;
     while ($row = $result->fetch_assoc()) {
-        $rowCount++;
+        // $rowCount++;
 ?>
         <tr>
-            <td class="px-5"><?php echo $rowCount; ?></td>
+                <td class="px-5">
+                    <input type="checkbox" class="custom-checkbox" name="selectedLRs[]" value="<?php echo $row['trip_id']; ?>">
+                </td>
+            <!-- <td class="px-5"><?php echo $rowCount; ?></td> -->
             <td class="px-5"><?php echo $row['vehicle_no']; ?></td>
             <td class="px-5"><?php echo $row['lr_no']; ?></td>
             <td class="px-5"><?php echo $row['lr_date']; ?></td>
@@ -424,8 +566,10 @@ if (isset($result) && $result->num_rows > 0) {
 <br>
 <!-- End Table with stripped rows -->
 <div class="text-center">
-<button class="btn btn-primary text-center">Submit</button>
-                        </div>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+        <button type="submit" name="generate_bill" class="btn btn-lg btn-primary"><i class="fa-solid fa-circle-plus"></i>&nbsp;Generate Bill</button>
+    </form>
+</div>
         </div>
       </div>
 

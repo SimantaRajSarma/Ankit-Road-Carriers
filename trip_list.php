@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 
-    // SQL query to retrieve all data from the vehicle table
+    // SQL query to retrieve all data from the table
     $sql = "SELECT 
     trip_entry.trip_id,
     trip_entry.lr_no,

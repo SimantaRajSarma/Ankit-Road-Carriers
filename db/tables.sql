@@ -115,3 +115,21 @@ CREATE TABLE `trip_entry` (
   FOREIGN KEY (`Consignor_id`) REFERENCES `Consignor_Details` (`Consignor_id`) ON DELETE SET NULL,
   FOREIGN KEY (`Consignee_id`) REFERENCES `Consignee_Details` (`Consignee_id`) ON DELETE SET NULL
 );
+
+CREATE TABLE `party_bill` (
+    `bill_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `bill_number` VARCHAR(50) NOT NULL,
+    `party_id` INT NOT NULL,
+    `bill_amount` DECIMAL(10, 2) DEFAULT NULL,
+    `bill_date` DATE NOT NULL,
+    FOREIGN KEY (`party_id`) REFERENCES `party` (`party_id`) ON DELETE CASCADE,
+);
+
+CREATE TABLE `party_bill_lr` (
+    `bill_lr_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `bill_id` INT NOT NULL,
+    `lr_id` INT NOT NULL,
+    FOREIGN KEY (`bill_id`) REFERENCES `party_bill` (`bill_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`lr_id`) REFERENCES `trip_entry` (`trip_id`) ON DELETE CASCADE
+);
+

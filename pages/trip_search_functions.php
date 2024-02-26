@@ -79,6 +79,36 @@ JOIN
 }
 
 
+// Function to fetch trips by vehicle number
+function fetchTripsByVehicle($conn, $vehicleID) {
+    $sql = "SELECT 
+    trip_entry.*,
+    vehicle.VehicleNo AS vehicle_no,
+    vehicle.OwnerType AS vehicle_owner_type,
+    driver.DriverName AS driver_name,
+    party.party_name,
+    products.product_name
+FROM 
+    trip_entry
+JOIN 
+    vehicle ON trip_entry.vehicle_id = vehicle.VehicleID
+JOIN 
+    driver ON trip_entry.driver_id = driver.DriverID
+JOIN 
+    party ON trip_entry.party_id = party.party_id
+JOIN 
+    products ON trip_entry.product_id = products.product_id 
+WHERE 
+    vehicle.VehicleNo = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $vehicleID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result;
+}
+
+
+
 // Fetch Parties with IDs
 function fetchParty($conn) {
     $party_data = [];
