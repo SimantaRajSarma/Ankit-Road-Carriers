@@ -7,39 +7,126 @@ ini_set('display_errors', 1);
 session_start();
 include("include/connection.php");
 
-if (!isset($_SESSION["admin_id"])) {
+if (!isset($_SESSION["admin_id"])) { n +
     header("location:login.php");
     exit();
 }
 include('pages/fetch_data.php');
 
 
+// Function to generate a unique LR number
+function generateLRNumber($conn) {
+    // Retrieve the maximum LR number from the database
+    $query = "SELECT MAX(lr_no) AS max_lr FROM trip_entry";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    $max_lr = $row['max_lr'];
+
+    // If no LR number exists in the database, start from 1
+    if ($max_lr === null) {
+        return 1;
+    }
+
+    // Increment the maximum LR number by 1 to get the next LR number
+    $next_lr = $max_lr + 1;
+
+    // Check if the generated LR number already exists in the database
+    $query = "SELECT COUNT(*) AS count FROM trip_entry WHERE lr_no = $next_lr";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    $count = $row['count'];
+
+    // If LR number exists, generate a new LR number
+    while ($count > 0) {
+        $next_lr++;
+        $query = "SELECT COUNT(*) AS count FROM trip_entry WHERE lr_no = $next_lr";
+        $result = mysqli_query($conn, $query);
+        $row = mysqli_fetch_assoc($result);
+        $count = $row['count'];
+    }
+
+    // Return the unique LR number
+    return $next_lr;
+}
+
+$lr_number = generateLRNumber($conn);
   
-  
- // Function to store trip data into the trip_entry table
-function storeTripData($conn, $data) {
-    
-    $sql = "INSERT INTO trip_entry (vehicle_id, driver_id, party_id, product_id, lr_no, lr_date, lr_type, challan_no, source, destination, bill_mode, against_trip_id, loading_wt, unload_wt, party_rate, trptr_rate, rate_type, bill_no, statement_no, bill_freight, vehicle_freight, consignor_name, consignor_mobile, consignor_gstin, consignor_email, consignor_address, consignee_name, consignee_mobile, consignee_gstin, consignee_email, consignee_address, delivery_address, remarks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+// Function to store Consignor data
+function storeConsignorData($conn, $data) {
+    $sql = "INSERT INTO Consignor_Details (Consignor_name, Consignor_mobile, Consignor_gstin, Consignor_email, Consignor_address) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iiiisssssssiddddsssddssssssssssss", $data['vehicle_id'], $data['driver_id'], $data['party_id'], $data['product_id'], $data['lr_no'], $data['lr_date'], $data['lr_type'], $data['challan_no'], $data['source'], $data['destination'], $data['bill_mode'], $data['against_trip_id'], $data['loading_wt'], $data['unload_wt'], $data['party_rate'], $data['trptr_rate'], $data['rate_type'], $data['bill_no'], $data['statement_no'], $data['bill_freight'], $data['vehicle_freight'], $data['consignor_name'], $data['consignor_mobile'], $data['consignor_gstin'], $data['consignor_email'], $data['consignor_address'], $data['consignee_name'], $data['consignee_mobile'], $data['consignee_gstin'], $data['consignee_email'], $data['consignee_address'], $data['delivery_address'], $data['remarks']);
+    $stmt->bind_param("sssss", $data['consignor_name'], $data['consignor_mobile'], $data['consignor_gstin'], $data['consignor_email'], $data['consignor_address']);
     $stmt->execute();
 
-    // Check if the query was successful
+    if ($stmt->affected_rows > 0) {
+        // Return the auto-generated ID of the inserted record
+        return $stmt->insert_id;
+    } else {
+        return null;
+    }
+}
+
+// Function to store Consignee data
+function storeConsigneeData($conn, $data) {
+    $sql = "INSERT INTO Consignee_Details (Consignee_name, Consignee_mobile, Consignee_gstin, Consignee_email, Consignee_address, Delivery_address) VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssssss", $data['consignee_name'], $data['consignee_mobile'], $data['consignee_gstin'], $data['consignee_email'], $data['consignee_address'], $data['delivery_address']);
+    $stmt->execute();
+
+    if ($stmt->affected_rows > 0) {
+        // Return the auto-generated ID of the inserted record
+        return $stmt->insert_id;
+    } else {
+        return null;
+    }
+}
+
+// Function to store trip data into the trip_entry table
+function storeTripData($conn, $data) {
+    $sql = "INSERT INTO trip_entry (vehicle_id, driver_id, party_id, product_id, lr_no, lr_date, lr_type, invoice_no, source, destination, bill_mode, against_trip_id, loading_wt, unload_wt, e_way_bill_no, e_way_bill_date, party_rate, trptr_rate, rate_type, bill_no, bill_freight, vehicle_freight, diesel_charges, pump_cash, cash_in_hand, rtgs_charge, unloading_charges, labour_charges, commission, Consignor_id, Consignee_id, remarks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iiiisssssssiddisssssdddddddddiis", $data['vehicle_id'], $data['driver_id'], $data['party_id'], $data['product_id'], $data['lr_no'], $data['lr_date'], $data['lr_type'], $data['invoice_no'], $data['source'], $data['destination'], $data['bill_mode'], $data['against_trip_id'], $data['loading_wt'], $data['unload_wt'], $data['e_way_bill_no'], $data['e_way_bill_date'], $data['party_rate'], $data['trptr_rate'], $data['rate_type'], $data['bill_no'], $data['bill_freight'], $data['vehicle_freight'], $data['diesel_charges'], $data['pump_cash'], $data['cash_in_hand'], $data['rtgs_charge'], $data['unloading_charges'], $data['labour_charges'], $data['commission'], $data['Consignor_id'], $data['Consignee_id'], $data['remarks']);
+    $stmt->execute();
+
     if ($stmt->affected_rows > 0) {
         return "Data inserted successfully!";
     } else {
         return "Error: " . $conn->error;
     }
 
-    // Close the statement
     $stmt->close();
 }
 
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $data = array(
+    // Retrieve and sanitize form data for Consignor
+    $consignor_data = array(
+        'consignor_name' => $_POST['consignor_name'],
+        'consignor_mobile' => $_POST['consignor_mobile'],
+        'consignor_gstin' => $_POST['consignor_gstin'],
+        'consignor_email' => $_POST['consignor_email'],
+        'consignor_address' => $_POST['consignor_address']
+    );
+
+    // Store Consignor data
+    $consignor_id = storeConsignorData($conn, $consignor_data);
+
+    // Retrieve and sanitize form data for Consignee
+    $consignee_data = array(
+        'consignee_name' => $_POST['consignee_name'],
+        'consignee_mobile' => $_POST['consignee_mobile'],
+        'consignee_gstin' => $_POST['consignee_gstin'],
+        'consignee_email' => $_POST['consignee_email'],
+        'consignee_address' => $_POST['consignee_address'],
+        'delivery_address' => $_POST['delivery_address']
+    );
+
+    // Store Consignee data
+    $consignee_id = storeConsigneeData($conn, $consignee_data);
+
+    // Construct $trip_data array with Consignor and Consignee IDs
+    $trip_data = array(
         'vehicle_id' => $_POST['vehicle_no'],
         'driver_id' => $_POST['driver_name'],
         'party_id' => $_POST['party_name'],
@@ -47,43 +134,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'lr_no' => $_POST['lr_number'],
         'lr_date' => $_POST['lr_date'],
         'lr_type' => $_POST['lr_type'],
-        'challan_no' => $_POST['challan_no'],
+        'invoice_no' => $_POST['invoice_no'],
         'source' => $_POST['source'],
         'destination' => $_POST['destination'],
         'bill_mode' => $_POST['bill_mode'],
         'against_trip_id' => $_POST['against_trip_id'],
         'loading_wt' => $_POST['loading_wt'],
         'unload_wt' => $_POST['unload_wt'],
+        'e_way_bill_no' => $_POST['e_way_bill_no'],
+        'e_way_bill_date' => $_POST['e_way_bill_date'],
         'party_rate' => $_POST['party_rate'],
         'trptr_rate' => $_POST['transporter_rate'],
         'rate_type' => $_POST['party_rate_type'],
-        'bill_no' => $_POST['bill_no'],
-        'statement_no' => $_POST['statement_no'],
         'bill_freight' => $_POST['bill_freight'],
         'vehicle_freight' => $_POST['vehicle_freight'],
-        'consignor_name' => $_POST['consignor_name'],
-        'consignor_mobile' => $_POST['consignor_mobile'],
-        'consignor_gstin' => $_POST['consignor_gstin'],
-        'consignor_email' => $_POST['consignor_email'],
-        'consignor_address' => $_POST['consignor_address'],
-        'consignee_name' => $_POST['consignee_name'],
-        'consignee_mobile' => $_POST['consignee_mobile'],
-        'consignee_gstin' => $_POST['consignee_gstin'],
-        'consignee_email' => $_POST['consignee_email'],
-        'consignee_address' => $_POST['consignee_address'],
-        'delivery_address' => $_POST['delivery_address'],
+        'diesel_charges' => $_POST['diesel_charges'],
+        'pump_cash' => $_POST['pump_cash'],
+        'cash_in_hand' => $_POST['cash_in_hand'],
+        'rtgs_charge' => $_POST['rtgs_charge'],
+        'unloading_charges' => $_POST['unloading_charges'],
+        'labour_charges' => $_POST['labour_charges'],
+        'commission' => $_POST['commission'],
+        'Consignor_id' => $consignor_id,
+        'Consignee_id' => $consignee_id,
         'remarks' => $_POST['remarks']
     );
-    
 
     // Call the function to store the trip data
-    $result = storeTripData($conn, $data);
-    
+    $result = storeTripData($conn, $trip_data);
+
     echo "<script>alert('$result');</script>";
-
 }
-
 ?>
+
 
 
 
@@ -119,6 +202,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <style>
 
+.other_charges {
+  background-color: #DAF5FF !important;
+}
+
+.other_charges:focus {
+  background-color: #DAF5FF !important;
+}
 
 </style>
   </head>
@@ -130,7 +220,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
-              <div class="card-body">
+              <div class="card-body p-3">
                 <h5 class="card-title text-center pb-5">Trip / LR Entry</h5>
                 <!-- <div class="alert alert-success alert-dismissible fade show" role="alert">
         Hello
@@ -142,11 +232,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   method="post"
                   enctype="multipart/form-data"
                   action=""
+
                 >
                 <div class="row">
                 <div class="col-md-3 col-sm-12">
                     <label for="vehicle_no" class="form-label fw-bold">Vehicle No :</label>
-                 <select name="vehicle_no" class="form-select" id="vehicle_no" required>
+                 <select name="vehicle_no" class="form-select" id="vehicle_no">
                     <option selected disabled>Select vehicle...</option>
                     <?php 
                     $vehicle_list = fetchVehicles($conn);
@@ -184,8 +275,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input
                     type="number"
                     name="against_trip_id"
-                    class="form-control"
+                    class="form-control other_charges"
                     value=""
+                    placeholder="trip id"
                     readonly
                 />
             </div>
@@ -196,23 +288,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input
                 type="text"
                     name="lr_number"
-                    class="form-control"
-                    value=""
-                   
+                    class="form-control other_charges"
+                    value="<?= $lr_number; ?>"
+                   readonly
                 />
             </div>
 
             
             <div class="col-md-3 col-sm-12">
-                <label for="challan_no" class="form-label fw-bold">Invoice No :</label>
+                <label for="invoice_no" class="form-label fw-bold">Invoice No :</label>
                 <input
                 type="text"
-                    name="challan_no"
+                    name="invoice_no"
                     class="form-control"
                     placeholder="Enter Invoice No"
+                    required
                 />
             </div>
-
 
                     
             <div class="col-md-3 col-sm-12">
@@ -224,6 +316,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         class="form-control"
         value=""
         placeholder="Loading weight"
+        min="0"
+        required
     />
 </div>
 
@@ -238,14 +332,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         class="form-control"
         value=""
         placeholder="Unload weight"
+        min="0"
     />
 </div>
+
+<div class="col-md-6 col-sm-12">
+                <label for="e_way_bill_no" class="form-label fw-bold">E Way Bill No. :</label>
+                <input
+                type="number"
+                    name="e_way_bill_no"
+                    class="form-control"
+                    value=""
+                    placeholder="E Way bill number..."
+                    min="0"
+                />
+            </div>
+
+            
+            <div class="col-md-6 col-sm-12">
+                <label for="e_way_bill_date" class="form-label fw-bold">E Way Bill Date :</label>
+                <input
+                type="date"
+                    name="e_way_bill_date"
+                    class="form-control"
+                    value="<?php echo date('Y-m-d'); ?>"
+                />
+            </div>
+
 
 
 
             <div class="col-md-6 col-sm-12">
                 <label for="product_name" class="form-label fw-bold">Product Name :</label>
-                <select name="product_name" class="form-select" required>
+                <select name="product_name" class="form-select">
                     <option selected disabled>Select product...</option>
                     <?php 
                     $product_list = fetchProducts($conn);
@@ -265,6 +384,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         class="form-control"
         value=""
         placeholder="Party Rate..."
+        min="0"
     />
 </div>
     
@@ -277,17 +397,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         class="form-control"
         value=""
         placeholder="Transporter Rate..."
+        min="0"
     />
 </div>
 
             <div class="col-md-3 col-sm-12">
     <label for="source" class="form-label fw-bold">Source:</label>
-    <input type="text" name="source" class="form-control" placeholder="Enter Source...">
+    <input type="text" name="source" class="form-control" placeholder="Enter Source..." required>
 </div>
 
 <div class="col-md-3 col-sm-12">
     <label for="destination" class="form-label fw-bold">Destination</label>
-    <input type="text" name="destination" class="form-control" placeholder="Enter Destination...">
+    <input type="text" name="destination" class="form-control" placeholder="Enter Destination..." required>
 </div>
 
 
@@ -317,8 +438,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-
-
             <div class="col-md-6 col-sm-12">
     <label for="bill_mode" class="form-label fw-bold">Bill Mode:</label>
     <select id="bill_mode" name="bill_mode" class="form-select">
@@ -333,12 +452,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
             <div class="col-md-6 col-sm-12">
                 <label for="driver_name" class="form-label fw-bold">Driver Name :</label>
-                <select name="driver_name" class="form-select" required>
+                <select name="driver_name" class="form-select">
                     <option selected disabled>Select driver...</option>
                     <?php 
                     $driver_data = fetchDriverData($conn);
                         foreach ($driver_data as $driver): ?>
-                        <option value="<?= $driver['id']; ?>"><?= $driver['name']; ?></option>
+                        <option value="<?= $driver['id']; ?>"><?= $driver['name']; ?>( <?= isset($driver['phone']) ? $driver['phone'] : ''; ?>
+ )</option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -362,22 +482,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input
                 type="text"
                     name="vehicle_owner"
-                    class="form-control fw-semibold"
+                    class="form-control fw-semibold other_charges"
                     id="vehicle_owner"
                     readonly
                 />
             </div>
-
-
-
-
-
-
-
-            
+    
             <div class="col-md-6 col-sm-12">
             <label for="bill_freight" class="form-label fw-bold">Bill Freight :</label>
                 <input
+                    style="background-color: #C3ACD0"
                     type="number"
                     id="bill_freight"
                     name="bill_freight"
@@ -387,10 +501,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 />
         </div>
 
+
              
         <div class="col-md-6 col-sm-12">
     <label for="vehicle_freight" class="form-label fw-bold">Vehicle Freight :</label>
     <input
+    style="background-color: #C3ACD0"
         type="number"
         id="vehicle_freight"
         name="vehicle_freight"
@@ -400,7 +516,95 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     />
 </div>
 
+<!-- Other Charges -->
+<div class="col-md-4 col-sm-12">
+            <label for="diesel_charges" class="form-label fw-bold">Diesel Charge :</label>
+                <input
+                    type="number"
+                    id="diesel_charges"
+                    name="diesel_charges"
+                    class="form-control fw-medium other_charges"
+                    value=""
+                    min="0"
+                    
+                />
+        </div>
 
+        <div class="col-md-4 col-sm-12">
+            <label for="pump_cash" class="form-label fw-bold">Pump Cash :</label>
+                <input
+                    type="number"
+                    id="pump_cash"
+                    name="pump_cash"
+                    class="form-control fw-medium other_charges"
+                    value=""
+                    min="0"
+                    
+                />
+        </div>
+
+        <div class="col-md-4 col-sm-12 ">
+            <label for="cash_in_hand" class="form-label fw-bold">Case in Hand :</label>
+                <input
+                    type="number"
+                    id="cash_in_hand"
+                    name="cash_in_hand"
+                    class="form-control fw-medium other_charges"
+                    value=""
+                    min="0"
+                    
+                />
+        </div>
+
+        <div class="col-md-4 col-sm-12 ">
+            <label for="rtgs_charge" class="form-label fw-bold">RTGS Charge :</label>
+                <input
+                    type="number"
+                    id="rtgs_charge"
+                    name="rtgs_charge"
+                    class="form-control fw-medium other_charges"
+                    value=""
+                    min="0"
+                />
+        </div>
+
+        <div class="col-md-4 col-sm-12">
+            <label for="unloading_charges" class="form-label fw-bold">Unloading Charge :</label>
+                <input
+                    type="number"
+                    id="unloading_charges"
+                    name="unloading_charges"
+                    class="form-control fw-medium other_charges"
+                    value=""
+                    min="0" 
+                />
+        </div>
+
+        <div class="col-md-4 col-sm-12">
+            <label for="labour_charges" class="form-label fw-bold">Labour Charge :</label>
+                <input
+                    type="number"
+                    id="labour_charges"
+                    name="labour_charges"
+                    class="form-control fw-medium other_charges"
+                    value=""
+                    min="0"
+                />
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <label for="commission" class="form-label fw-bold">Commission :</label>
+                <input
+                    type="number"
+                    id="commission"
+                    name="commission"
+                    class="form-control fw-medium other_charges"
+                    value=""
+                    min="0"
+                />
+        </div>
+
+
+            <div class="row p-3">
             <div class="col-md-3 col-sm-12">
                 <label for="bill_balance_amount" class="form-label fw-bold">Balance Amount :</label>
                 <input
@@ -454,6 +658,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                 />
             </div>
+    </div>
 
             
             <h5 class="card-title text-center">Consignor Details</h5>
