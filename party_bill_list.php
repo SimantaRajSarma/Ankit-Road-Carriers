@@ -1,5 +1,11 @@
 <?php
-error_reporting(0);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+date_default_timezone_set('Asia/Kolkata');
+// error_reporting(0);
+
+include('pages/bills_search_functions.php');
+
 session_start();
 include("include/connection.php");
 
@@ -8,8 +14,32 @@ if (!isset($_SESSION["admin_id"])) {
     exit();
 }
 
-    // SQL query to retrieve all data from the vehicle table
-    $sql = "SELECT * FROM products";
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $partyID = isset($_POST['party_id']) ? $_POST['party_id'] : '';
+  $bill_date = isset($_POST['bill_date']) ? $_POST['bill_date'] : '';
+  
+
+  if ($partyID != '' && $bill_date != '') {
+      $result = fetchBillsByPartyAndDate($conn, $partyID, $bill_date);
+  }
+  
+  elseif ($partyID != '') {
+      $result = fetchBillsByParty($conn, $partyID);
+  }
+ 
+  elseif ($partyID == '' && !empty($bill_date)) {
+      $result = fetchBillsByDate($conn, $bill_date);
+  }
+ 
+  else {
+      echo "<script>alert('Please select at least one search criteria.');</script>";
+  }
+
+}
+
+    // SQL query to retrieve all data from the table
+    $sql = "SELECT party_bill.*, party.party_name FROM party_bill INNER JOIN party ON party_bill.party_id = party.party_id ";
 
     // Execute the query
     $result = $conn->query($sql);
@@ -25,13 +55,13 @@ if (!isset($_SESSION["admin_id"])) {
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Manage Products</title>
+  <title>Party Bill List</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="assets/img/logo1.png" rel="icon">
-  <link href="assets/img/logo1.png" rel="apple-touch-icon">
+  <link href="https://ankitroadcarrier.in/arc_logo.jpg" rel="icon">
+  <link href="https://ankitroadcarrier.in/arc_logo.jpg" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -43,7 +73,6 @@ if (!isset($_SESSION["admin_id"])) {
   <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
   <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
   <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
@@ -129,6 +158,60 @@ if (!isset($_SESSION["admin_id"])) {
             border-bottom-color: #256EFF;
         }
 
+    .report{
+        border-radius:5px;
+        font-weight:bold;
+    }
+
+    /* CSS for the search form */
+.search-form {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #E4FBFF;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+    
     </style>
 
 </head>
@@ -145,15 +228,12 @@ if (!isset($_SESSION["admin_id"])) {
 include('include/header.php');
 
 ?>
-<audio id="notificationSound">
-    <source src="notification.wav" type="audio/mpeg">
-   
-</audio>
+
 
 <main id="main" class="main">
 
 <div class="pagetitle">
-  <h1>Manage Products</h1>
+  <h1>Party Bill List</h1>
   <nav>
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
@@ -188,40 +268,72 @@ function deleteConfirm(obj){
         
         <div class="card-body">
          <br>
+         <div class="report">
+         <form method="post" action="" class="search-form">
+    <div class="row">
+      <div class="col-md-6">
+            <div class="form-group">
+                <label for="courseSelect" >Select Party:</label>
+                <select id="courseSelect" name="party_id" class="form-select">
+                    <option value="none" selected disabled>Select a Party...</option>
+                    <?php 
+                    $party_data = fetchParty($conn);
+                        foreach ($party_data as $party): ?>
+                        <option value="<?= $party['id']; ?>"><?= $party['name']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="courseSelect" >Bill Date:</label>
+                <input type="date" class="form-control" name="bill_date" value="<?php echo date('Y-m-d'); ?>" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <button type="submit" class="btn btn-lg btn-primary"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;&nbsp;Search</button>
+        </div>
+    </div>
+</form>
+ </div>
+ <br>
           <!-- Table with stripped rows -->
-           <div class="table-responsive">
-          <table class="table datatable">
-            <thead>
-              <tr>
-              <th scope="col">#</th>
-                <th scope="col">Product Name</th>
-            
-                <th width="15%">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-            <?php $rank=1; 
-            while($row=mysqli_fetch_assoc($result)) {
-                ?>
-              <tr>
-              <td><b><?php echo $rank?></b></td>
-                <td><?php echo $row['product_name'];?></td>
-               
-               
-                <!-- <td></td> -->
-                <td><button class="btn btn-danger" onclick="deleteConfirm('delete_product.php?product_id=<?php echo $row['product_id']; ?>')">
-                        <i class="fa-solid fa-trash"></i>
-                    </button></td>
-
+<div class="table-responsive">
+    <table class="table datatable table-hover">
+        <thead>
+            <tr>
+                <th scope="col" class="px-5">#</th>
+                <th scope="col" class="px-5">Bill No</th>
+                <th scope="col" class="px-5">Party Name</th>
+                <th scope="col" class="px-5">Bill Amount</th>
+                <th scope="col" class="px-5">Bill Date</th>
+                <th scope="col" class="px-5" >Action</th>
             </tr>
-           
-                <?php $rank++; }?>
-            </tbody>
-          </table>
-
-
-          </div>
-          <!-- End Table with stripped rows -->
+        </thead>
+        <tbody>
+            <?php 
+            $rank = 1; 
+            // Assuming $result contains the result of the SQL query
+            while($row = mysqli_fetch_assoc($result)) {
+            ?>
+                <tr>
+                    <td class="px-5"><b><?php echo $rank; ?></b></td>
+                    <td class="px-5"><?php echo $row['bill_number']; ?></td>
+                    <td class="px-5"><?php echo $row['party_name']; ?></td>
+                    <td class="px-5"><?php echo $row['bill_amount']; ?></td>
+                    <td class="px-5"><?php echo $row['bill_date']; ?></td>
+                   <td><a href="party_bill_format.php?bill_id=<?php echo $row['bill_id']; ?>"><button class="btn btn-warning"><i class="fa-solid fa-eye"></i>&nbsp;View</button></a></td>
+                </tr>
+            <?php 
+                $rank++; 
+            } 
+            ?>
+        </tbody>
+    </table>
+</div>
+<!-- End Table with stripped rows -->
 
         </div>
       </div>
@@ -248,13 +360,12 @@ include('include/footer.php');
     
    
   <!-- Vendor JS Files -->
-  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/chart.js/chart.umd.js"></script>
-  <script src="assets/vendor/echarts/echarts.min.js"></script>
   <script src="assets/vendor/quill/quill.min.js"></script>
   <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
    <script src="assets/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
 
 
   <!-- Template Main JS File -->

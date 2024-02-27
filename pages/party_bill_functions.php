@@ -8,10 +8,10 @@ function fetchTripsByPartyName($conn, $partyName) {
     driver.DriverName AS driver_name,
     party.party_name,
     products.product_name,
-    consignor_details.Consignor_name AS consignor_name,
-    consignor_details.Consignor_mobile AS consignor_mobile,
-    consignee_details.Consignee_name AS consignee_name,
-    consignee_details.Consignee_mobile AS consignee_mobile
+    consignor_Details.Consignor_name AS consignor_name,
+    consignor_Details.Consignor_mobile AS consignor_mobile,
+    consignee_Details.Consignee_name AS consignee_name,
+    consignee_Details.Consignee_mobile AS consignee_mobile
 FROM 
     trip_entry
 JOIN 
@@ -23,9 +23,9 @@ JOIN
 JOIN 
     products ON trip_entry.product_id = products.product_id
 LEFT JOIN 
-    consignor_details ON trip_entry.Consignor_id = consignor_details.Consignor_id
+    consignor_Details ON trip_entry.Consignor_id = consignor_Details.Consignor_id
 LEFT JOIN 
-    consignee_details ON trip_entry.Consignee_id = consignee_details.Consignee_id
+    consignee_Details ON trip_entry.Consignee_id = consignee_Details.Consignee_id
 LEFT JOIN
     party_bill_lr ON trip_entry.trip_id = party_bill_lr.lr_id
 WHERE 
@@ -46,10 +46,10 @@ function fetchTripsByPartyNameAndDate($conn, $partyName, $startDate, $endDate) {
     driver.DriverName AS driver_name,
     party.party_name,
     products.product_name,
-    consignor_details.Consignor_name AS consignor_name,
-    consignor_details.Consignor_mobile AS consignor_mobile,
-    consignee_details.Consignee_name AS consignee_name,
-    consignee_details.Consignee_mobile AS consignee_mobile
+    consignor_Details.Consignor_name AS consignor_name,
+    consignor_Details.Consignor_mobile AS consignor_mobile,
+    consignee_Details.Consignee_name AS consignee_name,
+    consignee_Details.Consignee_mobile AS consignee_mobile
 FROM 
     trip_entry
 JOIN 
@@ -61,9 +61,9 @@ JOIN
 JOIN 
     products ON trip_entry.product_id = products.product_id
 LEFT JOIN 
-    consignor_details ON trip_entry.Consignor_id = consignor_details.Consignor_id
+    consignor_Details ON trip_entry.Consignor_id = consignor_Details.Consignor_id
 LEFT JOIN 
-    consignee_details ON trip_entry.Consignee_id = consignee_details.Consignee_id
+    consignee_Details ON trip_entry.Consignee_id = consignee_Details.Consignee_id
 LEFT JOIN
     party_bill_lr ON trip_entry.trip_id = party_bill_lr.lr_id
 WHERE 
@@ -84,10 +84,10 @@ function fetchTripsByVehicle($conn, $vehicleNumber) {
     driver.DriverName AS driver_name,
     party.party_name,
     products.product_name,
-    consignor_details.Consignor_name AS consignor_name,
-    consignor_details.Consignor_mobile AS consignor_mobile,
-    consignee_details.Consignee_name AS consignee_name,
-    consignee_details.Consignee_mobile AS consignee_mobile
+    consignor_Details.Consignor_name AS consignor_name,
+    consignor_Details.Consignor_mobile AS consignor_mobile,
+    consignee_Details.Consignee_name AS consignee_name,
+    consignee_Details.Consignee_mobile AS consignee_mobile
 FROM 
     trip_entry
 JOIN 
@@ -99,9 +99,9 @@ JOIN
 JOIN 
     products ON trip_entry.product_id = products.product_id
 LEFT JOIN 
-    consignor_details ON trip_entry.Consignor_id = consignor_details.Consignor_id
+    consignor_Details ON trip_entry.Consignor_id = consignor_Details.Consignor_id
 LEFT JOIN 
-    consignee_details ON trip_entry.Consignee_id = consignee_details.Consignee_id
+    consignee_Details ON trip_entry.Consignee_id = consignee_Details.Consignee_id
 LEFT JOIN
     party_bill_lr ON trip_entry.trip_id = party_bill_lr.lr_id
 WHERE 
@@ -122,10 +122,10 @@ function fetchTripsByDate($conn, $startDate, $endDate) {
     driver.DriverName AS driver_name,
     party.party_name,
     products.product_name,
-    consignor_details.Consignor_name AS consignor_name,
-    consignor_details.Consignor_mobile AS consignor_mobile,
-    consignee_details.Consignee_name AS consignee_name,
-    consignee_details.Consignee_mobile AS consignee_mobile
+    consignor_Details.Consignor_name AS consignor_name,
+    consignor_Details.Consignor_mobile AS consignor_mobile,
+    consignee_Details.Consignee_name AS consignee_name,
+    consignee_Details.Consignee_mobile AS consignee_mobile
 FROM 
     trip_entry
 JOIN 
@@ -137,9 +137,9 @@ JOIN
 JOIN 
     products ON trip_entry.product_id = products.product_id
 LEFT JOIN 
-    consignor_details ON trip_entry.Consignor_id = consignor_details.Consignor_id
+    consignor_Details ON trip_entry.Consignor_id = consignor_Details.Consignor_id
 LEFT JOIN 
-    consignee_details ON trip_entry.Consignee_id = consignee_details.Consignee_id
+    consignee_Details ON trip_entry.Consignee_id = consignee_Details.Consignee_id
 LEFT JOIN
     party_bill_lr ON trip_entry.trip_id = party_bill_lr.lr_id
 WHERE 
@@ -160,10 +160,10 @@ function fetchTripsByPartyNameAndVehicle($conn, $partyName, $vehicleNumber) {
     driver.DriverName AS driver_name,
     party.party_name,
     products.product_name,
-    consignor_details.Consignor_name AS consignor_name,
-    consignor_details.Consignor_mobile AS consignor_mobile,
-    consignee_details.Consignee_name AS consignee_name,
-    consignee_details.Consignee_mobile AS consignee_mobile
+    consignor_Details.Consignor_name AS consignor_name,
+    consignor_Details.Consignor_mobile AS consignor_mobile,
+    consignee_Details.Consignee_name AS consignee_name,
+    consignee_Details.Consignee_mobile AS consignee_mobile
 FROM 
     trip_entry
 JOIN 
@@ -175,9 +175,9 @@ JOIN
 JOIN 
     products ON trip_entry.product_id = products.product_id
 LEFT JOIN 
-    consignor_details ON trip_entry.Consignor_id = consignor_details.Consignor_id
+    consignor_Details ON trip_entry.Consignor_id = consignor_Details.Consignor_id
 LEFT JOIN 
-    consignee_details ON trip_entry.Consignee_id = consignee_details.Consignee_id
+    consignee_Details ON trip_entry.Consignee_id = consignee_Details.Consignee_id
 LEFT JOIN
     party_bill_lr ON trip_entry.trip_id = party_bill_lr.lr_id
 WHERE 
@@ -198,10 +198,10 @@ function fetchTripsByPartyNameVehicleAndDate($conn, $partyName, $vehicleNumber, 
     driver.DriverName AS driver_name,
     party.party_name,
     products.product_name,
-    consignor_details.Consignor_name AS consignor_name,
-    consignor_details.Consignor_mobile AS consignor_mobile,
-    consignee_details.Consignee_name AS consignee_name,
-    consignee_details.Consignee_mobile AS consignee_mobile
+    consignor_Details.Consignor_name AS consignor_name,
+    consignor_Details.Consignor_mobile AS consignor_mobile,
+    consignee_Details.Consignee_name AS consignee_name,
+    consignee_Details.Consignee_mobile AS consignee_mobile
 FROM 
     trip_entry
 JOIN 
@@ -213,9 +213,9 @@ JOIN
 JOIN 
     products ON trip_entry.product_id = products.product_id
 LEFT JOIN 
-    consignor_details ON trip_entry.Consignor_id = consignor_details.Consignor_id
+    consignor_Details ON trip_entry.Consignor_id = consignor_Details.Consignor_id
 LEFT JOIN 
-    consignee_details ON trip_entry.Consignee_id = consignee_details.Consignee_id
+    consignee_Details ON trip_entry.Consignee_id = consignee_Details.Consignee_id
 LEFT JOIN
     party_bill_lr ON trip_entry.trip_id = party_bill_lr.lr_id
 WHERE 
@@ -236,10 +236,10 @@ function fetchTripsByVehicleAndDate($conn, $vehicleNumber, $startDate, $endDate)
     driver.DriverName AS driver_name,
     party.party_name,
     products.product_name,
-    consignor_details.Consignor_name AS consignor_name,
-    consignor_details.Consignor_mobile AS consignor_mobile,
-    consignee_details.Consignee_name AS consignee_name,
-    consignee_details.Consignee_mobile AS consignee_mobile
+    consignor_Details.Consignor_name AS consignor_name,
+    consignor_Details.Consignor_mobile AS consignor_mobile,
+    consignee_Details.Consignee_name AS consignee_name,
+    consignee_Details.Consignee_mobile AS consignee_mobile
 FROM 
     trip_entry
 JOIN 
@@ -251,9 +251,9 @@ JOIN
 JOIN 
     products ON trip_entry.product_id = products.product_id
 LEFT JOIN 
-    consignor_details ON trip_entry.Consignor_id = consignor_details.Consignor_id
+    consignor_Details ON trip_entry.Consignor_id = consignor_Details.Consignor_id
 LEFT JOIN 
-    consignee_details ON trip_entry.Consignee_id = consignee_details.Consignee_id
+    consignee_Details ON trip_entry.Consignee_id = consignee_Details.Consignee_id
 LEFT JOIN
     party_bill_lr ON trip_entry.trip_id = party_bill_lr.lr_id
 WHERE 

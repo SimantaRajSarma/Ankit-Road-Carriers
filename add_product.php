@@ -4,31 +4,22 @@ session_start();
 include("include/connection.php");
 
 if (!isset($_SESSION["admin_id"])) {
-    header("location:login.php");
+    header("location:index.php");
     exit();
 }
 
 if(isset($_POST['submit'])) {
     $alertClass = ""; // Initialize the alert class
     $alertMessage = ""; // Initialize the alert message
-
-    $date = $_POST['date'];
    
-    $product_name = $_POST['product_name'];
-   
-    $unit = $_POST['unit'];
-  
-    $rate = $_POST['rate'];
-    $qty = $_POST['qty'];
-  
-    $remarks = $_POST['remarks'];
+    $product_name = mysqli_real_escape_string($conn, $_POST['product_name']);
 
 
     // Check if all required fields are filled
-    if(!empty($date)  && !empty($product_name) ) {
+    if(!empty($product_name)) {
         // Proceed with inserting data into the database
-        $sql = "INSERT INTO products (date, product_name,  unit, rate, opening_quantity,  remarks) 
-                VALUES ('$date', '$product_name', '$unit', '$rate', '$qty', '$remarks')";
+        $sql = "INSERT INTO products (product_name) 
+                VALUES ('$product_name')";
 
         $result = mysqli_query($conn, $sql);
 
@@ -76,8 +67,21 @@ if(isset($_POST['submit'])) {
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet" />
 
-    <script type="text/javascript" src="../lib/jquery.js"></script>
-    <script type="text/javascript" src="../lib/main.js"></script>
+     <style>
+        .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+    </style>
   </head>
   <body>
     <?php include('include/header.php');  ?>
@@ -103,120 +107,30 @@ if(isset($_POST['submit'])) {
                   enctype="multipart/form-data"
                   action=""
                 >
-
-
-                  <div class="col-6">
-                    <label for="date" class="form-label fw-bold"
-                      >Date :</label
-                    >
-                    <input
-                      type="date"
-                      class="form-control"
-                      id="inputNanme4"
-                      name="date" 
-                      value="<?php echo date('d-m-y'); ?>
-"
-                     
-                      required
-                    />
-                  </div>
-                 
-
-                  <div class="col-6">
+                  <div class="col-12 pb-3">
                     <label for="product_name" class="form-label fw-bold"
                       >Product Name :</label
                     >
                     <input
                       type="text"
-                      class="form-control"
-                      id="inputNanme4"
+                      class="form-control form-control-lg"
                       placeholder="Enter Product Name"
                       name="product_name"
                      
                       required
                     />
-                    
-                  </div>
-
-                 
-                  
-                  <div class="col-6">
-                    <label for="unit" class="form-label fw-bold"
-                      >Product Unit :</label
-                    >
-                    <select name="unit" class="form-select" >
-                    
-                      <option value="MT">MT</option>
-                    
-                    </select>
-                  </div>
-
-
-                 
-
- 
-
-                  <div class="col-6">
-                    <label for="rate" class="form-label fw-bold"
-                      >Rate :</label
-                    >
-                    <input
-                      type="number"
-                      class="form-control"
-                      name="rate"
-                      placeholder="Enter Rate"
-                      required
-                    />
-                  </div>
-
-
-
-
-
-                  <div class="col-6">
-                    <label for="qty" class="form-label fw-bold"
-                      >Qty :</label
-                    >
-                    <input
-                      type="number"
-                      class="form-control"
-                      name="qty"
-                      placeholder="Enter Opening Qty"
-                     
-                    />
-                  </div>
-
-              
-
-
-                  <div class="col-6">
-                    <label for="remarks" class="form-label fw-bold"
-                      >Remarks :</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="inputNanme4"
-                      name="remarks"
-                      placeholder="Enter Remarks"
-                      
-                    />
-                  </div>
-
-
-                 
-
+                  </div
                 </div>
                 
-                  <div class="text-center m-1">
+                   <div class="text-center m-1">
                     <button
                       type="submit"
                       name="submit"
-                      class="btn btn-success shadow"
+                      class="btn btn-lg btn-primary shadow"
                     >
-                      Submit
+                     <i class="fa-solid fa-floppy-disk"></i>&nbsp; Submit
                     </button>
-                    <button type="reset" class="btn btn-secondary">
+                    <button type="reset" class="btn btn-lg btn-secondary">
                       Reset
                     </button>
                   </div>

@@ -17,7 +17,9 @@ $(document).ready(function () {
   });
 });
 
+
 // Bill Freight Calculation
+
 $(document).ready(function () {
   // Add input event listener to the loading weight and party rate inputs
   $("#loading_wt, #party_rate").on("input", function () {
@@ -33,6 +35,7 @@ $(document).ready(function () {
     );
   });
 });
+
 
 // Vehicle Freight Calculation
 $(document).ready(function () {
