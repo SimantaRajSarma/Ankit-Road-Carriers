@@ -98,31 +98,68 @@ function storeTripData($conn, $data) {
 }
 
 
+// Function to fetch consignor ID based on consignor name
+function fetchConsignorId($conn, $consignor_name) {
+    $sql = "SELECT Consignor_id FROM consignor_Details WHERE Consignor_name = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $consignor_name);
+    $stmt->execute();
+    $stmt->bind_result($consignor_id);
+    $stmt->fetch();
+    $stmt->close();
+    return $consignor_id ? $consignor_id : false;
+}
+
+// Function to fetch consignee ID based on consignee name
+function fetchConsigneeId($conn, $consignee_name) {
+    $sql = "SELECT Consignee_id FROM consignee_Details WHERE Consignee_name = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $consignee_name);
+    $stmt->execute();
+    $stmt->bind_result($consignee_id);
+    $stmt->fetch();
+    $stmt->close();
+    return $consignee_id ? $consignee_id : false;
+}
+
+
+
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
     // Retrieve and sanitize form data for Consignor
-    $consignor_data = array(
-        'consignor_name' => $_POST['consignor_name'],
-        'consignor_mobile' => $_POST['consignor_mobile'],
-        'consignor_gstin' => $_POST['consignor_gstin'],
-        'consignor_email' => $_POST['consignor_email'],
-        'consignor_address' => $_POST['consignor_address']
-    );
-
-    // Store Consignor data
-    $consignor_id = storeConsignorData($conn, $consignor_data);
-
-    // Retrieve and sanitize form data for Consignee
-    $consignee_data = array(
-        'consignee_name' => $_POST['consignee_name'],
-        'consignee_mobile' => $_POST['consignee_mobile'],
-        'consignee_gstin' => $_POST['consignee_gstin'],
-        'consignee_email' => $_POST['consignee_email'],
-        'consignee_address' => $_POST['consignee_address']
-    );
-
-    // Store Consignee data
-    $consignee_id = storeConsigneeData($conn, $consignee_data);
+    $consignor_name = $_POST['consignor_name'];
+    $consignee_name = $_POST['consignee_name'];
+    
+    // Check if consignor exists in the database
+    $consignor_id = fetchConsignorId($conn, $consignor_name);
+    
+    // Check if consignee exists in the database
+    $consignee_id = fetchConsigneeId($conn, $consignee_name);
+    
+    // If consignor does not exist, store consignor data
+    if (!$consignor_id) {
+        $consignor_data = array(
+            'consignor_name' => $consignor_name,
+            'consignor_mobile' => $_POST['consignor_mobile'],
+            'consignor_gstin' => $_POST['consignor_gstin'],
+            'consignor_email' => $_POST['consignor_email'],
+            'consignor_address' => $_POST['consignor_address']
+        );
+        $consignor_id = storeConsignorData($conn, $consignor_data);
+    }
+    
+    // If consignee does not exist, store consignee data
+    if (!$consignee_id) {
+        $consignee_data = array(
+            'consignee_name' => $consignee_name,
+            'consignee_mobile' => $_POST['consignee_mobile'],
+            'consignee_gstin' => $_POST['consignee_gstin'],
+            'consignee_email' => $_POST['consignee_email'],
+            'consignee_address' => $_POST['consignee_address']
+        );
+        $consignee_id = storeConsigneeData($conn, $consignee_data);
+    }
 
     // Construct $trip_data array with Consignor and Consignee IDs
     $trip_data = array(
