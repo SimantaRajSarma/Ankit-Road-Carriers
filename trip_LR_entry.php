@@ -1,9 +1,9 @@
 <?php
 date_default_timezone_set('Asia/Kolkata');
 
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
-error_reporting(0);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+// error_reporting(0);
 session_start();
 include("include/connection.php");
 
@@ -68,9 +68,9 @@ function storeConsignorData($conn, $data) {
 
 // Function to store Consignee data
 function storeConsigneeData($conn, $data) {
-    $sql = "INSERT INTO consignee_Details (Consignee_name, Consignee_mobile, Consignee_gstin, Consignee_email, Consignee_address, Delivery_address) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO consignee_Details (Consignee_name, Consignee_mobile, Consignee_gstin, Consignee_email, Consignee_address) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssss", $data['consignee_name'], $data['consignee_mobile'], $data['consignee_gstin'], $data['consignee_email'], $data['consignee_address'], $data['delivery_address']);
+    $stmt->bind_param("sssss", $data['consignee_name'], $data['consignee_mobile'], $data['consignee_gstin'], $data['consignee_email'], $data['consignee_address']);
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
@@ -118,8 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'consignee_mobile' => $_POST['consignee_mobile'],
         'consignee_gstin' => $_POST['consignee_gstin'],
         'consignee_email' => $_POST['consignee_email'],
-        'consignee_address' => $_POST['consignee_address'],
-        'delivery_address' => $_POST['delivery_address']
+        'consignee_address' => $_POST['consignee_address']
     );
 
     // Store Consignee data
@@ -632,37 +631,6 @@ echo "<script>
                     min="0"
                 />
         </div>
-<script>
-// Function to calculate the sum of all input values
-function calculateAdvanceFreight() {
-    // Get the values from the input boxes
-    var dieselCharges = parseFloat(document.getElementById("diesel_charges").value) || 0;
-    var pumpCash = parseFloat(document.getElementById("pump_cash").value) || 0;
-    var cashInHand = parseFloat(document.getElementById("cash_in_hand").value) || 0;
-    var rtgsCharge = parseFloat(document.getElementById("rtgs_charge").value) || 0;
-    var unloadingCharges = parseFloat(document.getElementById("unloading_charges").value) || 0;
-    var labourCharges = parseFloat(document.getElementById("labour_charges").value) || 0;
-    var commission = parseFloat(document.getElementById("commission").value) || 0;
-    
-    // Calculate the sum
-    var advanceFreight = dieselCharges + pumpCash + cashInHand + rtgsCharge + unloadingCharges + labourCharges + commission;
-    
-    // Update the value of the advancefr input box
-    document.getElementById("advancefr").value = advanceFreight.toFixed(2);
-}
-
-// Listen for changes in all input boxes
-document.getElementById("diesel_charges").addEventListener("input", calculateAdvanceFreight);
-document.getElementById("pump_cash").addEventListener("input", calculateAdvanceFreight);
-document.getElementById("cash_in_hand").addEventListener("input", calculateAdvanceFreight);
-document.getElementById("rtgs_charge").addEventListener("input", calculateAdvanceFreight);
-document.getElementById("unloading_charges").addEventListener("input", calculateAdvanceFreight);
-document.getElementById("labour_charges").addEventListener("input", calculateAdvanceFreight);
-document.getElementById("commission").addEventListener("input", calculateAdvanceFreight);
-
-// Initial calculation
-calculateAdvanceFreight();
-</script>
 
             <div class="row p-3">
             <div class="col-md-3 col-sm-12">
@@ -723,15 +691,23 @@ calculateAdvanceFreight();
             
             <h5 class="card-title text-center">Consignor Details</h5>
 
-
+            <div class="col-md-3 col-sm-12">
+              <label for="consignor_select" class="form-label fw-bold form-label-sm">Select Consignor:</label>
+              <select id="consignor_select" class="form-select form-control-sm">
+                  <option value="">Select Consignor</option>
+                  <!-- Consignor names will be dynamically populated here -->
+              </select>
+          </div>
             <div class="col-md-3 col-sm-12">
                 <label for="consignor_name" class="form-label fw-bold">Consignor Name :</label>
                 <input
                 type="text"
                     name="consignor_name"
                     class="form-control"
-                    value="" required
-                    placeholder="Enter Consignor Name..."  
+                    value="" 
+                    required
+                    placeholder="Enter Consignor Name..."
+                    id="consignor_name"  
                 />
             </div>
 
@@ -745,6 +721,7 @@ calculateAdvanceFreight();
                     class="form-control"
                     value="" required
                     placeholder="Consignor mobile no..."
+                    id="consignor_mobile"
                 />
             </div>
 
@@ -759,6 +736,7 @@ calculateAdvanceFreight();
                     class="form-control"
                     value="" required
                     placeholder="Enter GSTIN..."
+                    id="consignor_gstin"
                 />
             </div>
 
@@ -771,6 +749,7 @@ calculateAdvanceFreight();
                     class="form-control"
                     value=""
                     placeholder="example@gmail.com"
+                    id="consignor_email"
                 />
             </div>
 
@@ -783,11 +762,13 @@ calculateAdvanceFreight();
 
 <h5 class="card-title text-center">Consignee Details</h5>
 
-
-
-
-
-
+        <div class="col-md-3 col-sm-12">
+              <label for="consignee_select" class="form-label fw-bold">Select Consignee:</label>
+              <select id="consignee_select" class="form-select form-control-sm">
+                  <option value="">Select Consignee</option>
+                  <!-- Consignee names will be dynamically populated here -->
+              </select>
+          </div>
              <div class="col-md-3 col-sm-12">
                 <label for="consignee_name" class="form-label fw-bold">Consignee Name :</label>
                 <input
@@ -796,6 +777,7 @@ calculateAdvanceFreight();
                     class="form-control"
                     value="" required
                     placeholder="Enter Consignee Name..."
+                    id="consignee_name"
                 />
             </div>
 
@@ -809,6 +791,7 @@ calculateAdvanceFreight();
                     class="form-control"
                     value=""
                     placeholder="Consignee Mobile No..."
+                    id="consignee_mobile"
                 />
             </div>
 
@@ -819,10 +802,12 @@ calculateAdvanceFreight();
                 <label for="consignee_gstin" class="form-label fw-bold">GSTIN NO :</label>
                 <input
                 type="text"
-                    name="consignee_gstin" required
+                    name="consignee_gstin" 
+                    required
                     class="form-control"
                     value=""
                     placeholder="GSTIN"
+                    id="consignee_gstin"
                 />
             </div>
 
@@ -834,34 +819,22 @@ calculateAdvanceFreight();
                     name="consignee_email"
                     class="form-control"
                     value=""
-                    placeholder="example@gmail.com"   
+                    placeholder="example@gmail.com"  
+                    id="consignee_email" 
                 />
             </div>
-
-
             
             <div class="col-12">
     <label for="consignee_address" class="form-label fw-bold">Address:</label>
     <textarea id="consignee_address" name="consignee_address" class="form-control" placeholder="Enter Client Address" rows="3"></textarea>
 </div>
 
-
-
-
-
 <div class="col-12">
     <label for="remarks" class="form-label fw-bold">Remarks:</label>
     <textarea id="remarks" name="remarks" class="form-control" placeholder="Remarks..." rows="3"></textarea>
 </div>
 
-                </div>
-               
-                 
-        
-               
- 
-                 
-                 
+                </div>   
                   <div class="text-center m-1">
                   <br>
           
@@ -907,6 +880,37 @@ calculateAdvanceFreight();
     <script src="pages/validate.js"></script>
       <!-- AJax caller -->
     <script src="pages/caller.js"></script>
+    <script>
+// Function to calculate the sum of all input values
+function calculateAdvanceFreight() {
+    // Get the values from the input boxes
+    var dieselCharges = parseFloat(document.getElementById("diesel_charges").value) || 0;
+    var pumpCash = parseFloat(document.getElementById("pump_cash").value) || 0;
+    var cashInHand = parseFloat(document.getElementById("cash_in_hand").value) || 0;
+    var rtgsCharge = parseFloat(document.getElementById("rtgs_charge").value) || 0;
+    var unloadingCharges = parseFloat(document.getElementById("unloading_charges").value) || 0;
+    var labourCharges = parseFloat(document.getElementById("labour_charges").value) || 0;
+    var commission = parseFloat(document.getElementById("commission").value) || 0;
+    
+    // Calculate the sum
+    var advanceFreight = dieselCharges + pumpCash + cashInHand + rtgsCharge + unloadingCharges + labourCharges + commission;
+    
+    // Update the value of the advancefr input box
+    document.getElementById("advancefr").value = advanceFreight.toFixed(2);
+}
+
+// Listen for changes in all input boxes
+document.getElementById("diesel_charges").addEventListener("input", calculateAdvanceFreight);
+document.getElementById("pump_cash").addEventListener("input", calculateAdvanceFreight);
+document.getElementById("cash_in_hand").addEventListener("input", calculateAdvanceFreight);
+document.getElementById("rtgs_charge").addEventListener("input", calculateAdvanceFreight);
+document.getElementById("unloading_charges").addEventListener("input", calculateAdvanceFreight);
+document.getElementById("labour_charges").addEventListener("input", calculateAdvanceFreight);
+document.getElementById("commission").addEventListener("input", calculateAdvanceFreight);
+
+// Initial calculation
+calculateAdvanceFreight();
+</script>
 
   </body>
 </html>
