@@ -5,13 +5,13 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Logistics Software</title>
+  <title>Ankit Road Carrier</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="https://ankitroadcarrier.in/logon33.jpg" rel="icon">
-  <link href="https://ankitroadcarrier.in/logon33.jpg" rel="apple-touch-icon">
+  <link href="https://ankitroadcarrier.in/arc_logo.jpg" rel="icon">
+  <link href="https://ankitroadcarrier.in/arc_logo.jpg" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -84,7 +84,7 @@ if (isset($_POST['submit'])) {
 
               <div class="d-flex justify-content-center py-4">
                 <a href="login.php" class="logo d-flex align-items-center w-auto">
-                  <img src="https://ankitroadcarrier.in/logon33.jpg"  alt="">
+                  <img src="https://ankitroadcarrier.in/arc_logo.jpg"  alt="" width="40" height="auto">
                   <span class="d-none d-lg-block">Ankit Road Carrier</span>
                 </a>
               </div><!-- End Logo -->

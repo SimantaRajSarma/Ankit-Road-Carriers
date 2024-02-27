@@ -1,7 +1,7 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-// error_reporting(0);
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+error_reporting(0);
 
 session_start();
 include("include/connection.php");
@@ -177,6 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generate_bill'])) {
 
     // Insert data into party_bill table
     $insertedBillId = insertPartyBill($conn, $party_bill_no, $partyName, $billAmount, $party_bill_date);
+    
 
     // Check if insertion into party_bill table was successful
     if ($insertedBillId) {
@@ -184,7 +185,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generate_bill'])) {
         insertPartyBillLR($conn, $insertedBillId, $lrIds);
 
         // Redirect to a success page or display a success message
-        echo "<script>alert('Bill generated successfully!');</script>";
+        echo "<script>
+    setTimeout(function() {
+        alert('Bill generated successfully!');
+        window.location.href = 'party_bill_entry.php';
+    }, 3); // 3 milliseconds delay
+</script>";
     } else {
         // Handle insertion failure
         echo "<script>alert('Failed to generate bill. Please try again.');</script>";
@@ -566,7 +572,6 @@ if (isset($result) && $result->num_rows > 0) {
 <br>
 <!-- End Table with stripped rows -->
 <div class="text-center">
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
         <button type="submit" name="generate_bill" class="btn btn-lg btn-primary"><i class="fa-solid fa-circle-plus"></i>&nbsp;Generate Bill</button>
     </form>
 </div>

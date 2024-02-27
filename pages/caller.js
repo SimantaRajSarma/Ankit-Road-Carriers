@@ -18,6 +18,7 @@ $(document).ready(function () {
 });
 
 // Bill Freight Calculation
+
 $(document).ready(function () {
   // Add input event listener to the loading weight and party rate inputs
   $("#loading_wt, #party_rate").on("input", function () {
@@ -48,4 +49,123 @@ $(document).ready(function () {
       isNaN(vehicleFreight) ? "" : vehicleFreight.toFixed(2)
     );
   });
+});
+$(document).ready(function () {
+  // Function to fetch and populate consignor names in the select dropdown
+  function fetchConsignorNames() {
+    $.ajax({
+      type: "GET",
+      url: "fetch_consignor_names.php", // PHP script to fetch consignor names
+      dataType: "json",
+      success: function (response) {
+        // Populate the select dropdown with consignor names
+        $("#consignor_select")
+          .empty()
+          .append('<option value="">Select Consignor</option>');
+        $.each(response, function (index, consignor) {
+          $("#consignor_select").append(
+            '<option value="' +
+              consignor.name +
+              '">' +
+              consignor.name +
+              "</option>"
+          );
+        });
+      },
+      error: function (xhr, status, error) {
+        console.error(xhr.responseText);
+      },
+    });
+  }
+
+  // Function to fetch and populate consignor details
+  function fetchConsignorDetails(consignorName) {
+    $.ajax({
+      type: "POST",
+      url: "fetch_consignor_details.php", // PHP script to fetch consignor details
+      data: { consignor_name: consignorName },
+      dataType: "json",
+      success: function (response) {
+        // Populate the input fields with the fetched details
+        $("#consignor_name").val(response.Consignor_name);
+        $("#consignor_mobile").val(response.Consignor_mobile);
+        $("#consignor_gstin").val(response.Consignor_gstin);
+        $("#consignor_email").val(response.Consignor_email);
+        $("#consignor_address").val(response.Consignor_address);
+      },
+      error: function (xhr, status, error) {
+        console.error(xhr.responseText);
+      },
+    });
+  }
+
+  // Event listener for consignor select dropdown change
+  $("#consignor_select").on("change", function () {
+    var consignorName = $(this).val();
+    if (consignorName !== "") {
+      fetchConsignorDetails(consignorName);
+    }
+  });
+
+  // Fetch consignor names when the page loads
+  fetchConsignorNames();
+
+  // Function to fetch and populate consignee names in the select dropdown
+  function fetchConsigneeNames() {
+    $.ajax({
+      type: "GET",
+      url: "fetch_consignee_names.php", // PHP script to fetch consignee names
+      dataType: "json",
+      success: function (response) {
+        // Populate the select dropdown with consignee names
+        $("#consignee_select")
+          .empty()
+          .append('<option value="">Select Consignee</option>');
+        $.each(response, function (index, consignee) {
+          $("#consignee_select").append(
+            '<option value="' +
+              consignee.name +
+              '">' +
+              consignee.name +
+              "</option>"
+          );
+        });
+      },
+      error: function (xhr, status, error) {
+        console.error(xhr.responseText);
+      },
+    });
+  }
+
+  // Function to fetch and populate consignee details
+  function fetchConsigneeDetails(consigneeName) {
+    $.ajax({
+      type: "POST",
+      url: "fetch_consignee_details.php", // PHP script to fetch consignee details
+      data: { consignee_name: consigneeName },
+      dataType: "json",
+      success: function (response) {
+        // Populate the input fields with the fetched details
+        $("#consignee_name").val(response.Consignee_name);
+        $("#consignee_mobile").val(response.Consignee_mobile);
+        $("#consignee_gstin").val(response.Consignee_gstin);
+        $("#consignee_email").val(response.Consignee_email);
+        $("#consignee_address").val(response.Consignee_address);
+      },
+      error: function (xhr, status, error) {
+        console.error(xhr.responseText);
+      },
+    });
+  }
+
+  // Event listener for consignee select dropdown change
+  $("#consignee_select").on("change", function () {
+    var consigneeId = $(this).val();
+    if (consigneeId !== "") {
+      fetchConsigneeDetails(consigneeId);
+    }
+  });
+
+  // Fetch consignee names when the page loads
+  fetchConsigneeNames();
 });

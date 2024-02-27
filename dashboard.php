@@ -83,7 +83,7 @@ include('include/header.php');
                       <div
                         class="card-icon rounded-circle d-flex align-items-center justify-content-center"
                       >
-                        <i class="bi bi-people-fill"></i>
+                        <i class="fa-solid fa-truck"></i>
                       </div>
                       <div class="ps-3">
                         <!-- Assuming your HTML structure -->

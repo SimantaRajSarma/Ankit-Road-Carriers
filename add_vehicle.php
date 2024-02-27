@@ -71,8 +71,21 @@ if (isset($_POST['submit'])) {
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet" />
 
-    <script type="text/javascript" src="../lib/jquery.js"></script>
-    <script type="text/javascript" src="../lib/main.js"></script>
+ <style>
+        .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+    </style>
   </head>
   <body>
     <?php include('include/header.php');  ?>
@@ -179,16 +192,15 @@ if (isset($_POST['submit'])) {
 
                  
                
-                  <div class="text-center m-1">
-                       <br>
+                   <div class="text-center m-3">
                     <button
                       type="submit"
                       name="submit"
-                      class="btn btn-success shadow"
+                      class="btn btn-lg btn-primary shadow m-2"
                     >
-                      Submit
+                     <i class="fa-solid fa-floppy-disk"></i>&nbsp; Submit
                     </button>
-                    <button type="reset" class="btn btn-secondary">
+                    <button type="reset" class="btn btn-lg btn-secondary">
                       Reset
                     </button>
                   </div>

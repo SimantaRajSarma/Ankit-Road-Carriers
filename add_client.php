@@ -9,7 +9,7 @@ session_start();
 include("include/connection.php");
 
 if (!isset($_SESSION["admin_id"])) {
-    header("location:login.php");
+    header("location:index.php");
     exit();
 }
 
@@ -20,6 +20,7 @@ if(isset($_POST['submit'])) {
     $client_name = $_POST['client_name'];
     $client_type = $_POST['client_type'];
     $mobile = $_POST['mobile'];
+    $email = $_POST['email'];
     $gstin = $_POST['gstin'];
     $client_address = $_POST['client_address'];
     
@@ -27,8 +28,8 @@ if(isset($_POST['submit'])) {
     // Check if all required fields are filled
     if(!empty($client_name) ) {
         // Proceed with inserting data into the database
-        $sql = "INSERT INTO party (party_name,party_type,contact_phone,gstin,address) 
-                VALUES ('$client_name', '$client_type','$mobile',' $gstin','$client_address')";
+        $sql = "INSERT INTO party (party_name,party_type,contact_phone, email, gstin, address) 
+                VALUES ('$client_name', '$client_type','$mobile','$email', '$gstin','$client_address')";
 
         $result = mysqli_query($conn, $sql);
 
@@ -73,9 +74,22 @@ if(isset($_POST['submit'])) {
 
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet" />
+    <style>
+        .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-    <script type="text/javascript" src="../lib/jquery.js"></script>
-    <script type="text/javascript" src="../lib/main.js"></script>
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+    </style>
+
   </head>
   <body>
     <?php include('include/header.php');  ?>
@@ -98,31 +112,29 @@ if(isset($_POST['submit'])) {
                 <form class="row g-3" method="post" enctype="multipart/form-data" action="">
 
 
-                  <div class="col-6">
+                  <div class="col-md-6">
                     <label for="vehicle_type" class="form-label fw-bold" >Client Name :</label>
                     <input
                       type="text"
                       class="form-control"
-                      id="inputNanme4"
                       placeholder="Enter Client Name"
                       name="client_name"
-                     
-                     
+                     required
                     />
                   </div>
 
-                  <div class="col-6">
+                  <div class="col-md-6">
     <label for="client_type" class="form-label fw-bold">Client Type :</label>
     <select id="client_type" name="client_type" class="form-select">
         <option value="Customer">Customer</option>
-        <option value="Supplier">Supplier</option>
-        <option value="Other">Other</option>
+        <!--<option value="Supplier">Supplier</option>-->
+        <!--<option value="Other">Other</option>-->
     </select>
 </div>
 
 
 
-                  <div class="col-6">
+                  <div class="col-md-6">
                     <label for="mobile" class="form-label fw-bold"
                       >Contact Number :</label
                     >
@@ -131,13 +143,25 @@ if(isset($_POST['submit'])) {
                       class="form-control"
                       name="mobile"
                       placeholder="Enter Contact Number"
-                     
+                     required
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="email" class="form-label fw-bold"
+                      >Email :</label
+                    >
+                    <input
+                      type="email"
+                      class="form-control"
+                      name="email"
+                      placeholder="Enter Email..."
+                     required
                     />
                   </div>
 
 
  
-                  <div class="col-6">
+                  <div class="col-md-12">
                     <label for="email" class="form-label fw-bold"
                       >GSTIN No :</label
                     >
@@ -146,7 +170,7 @@ if(isset($_POST['submit'])) {
                       class="form-control"
                       name="gstin"
                       placeholder="Enter GSTIN No"
-                     
+                      required
                     />
                   </div>
 
@@ -166,15 +190,15 @@ if(isset($_POST['submit'])) {
 
                 </div>
                 
-                  <div class="text-center m-1">
+                  <div class="text-center m-3">
                     <button
                       type="submit"
                       name="submit"
-                      class="btn btn-success shadow"
+                      class="btn btn-lg btn-primary shadow"
                     >
-                      Submit
+                     <i class="fa-solid fa-floppy-disk"></i>&nbsp; Submit
                     </button>
-                    <button type="reset" class="btn btn-secondary">
+                    <button type="reset" class="btn btn-lg btn-secondary">
                       Reset
                     </button>
                   </div>

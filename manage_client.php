@@ -215,8 +215,8 @@ function deleteConfirm(obj){
                 <td><?php echo $row['gstin'];?></td>
                 <td><?php echo $row['address'];?></td>
             
-                <td><button class="btn btn-danger btn-sm" onclick="deleteConfirm('delete_client.php?client_id=<?php echo $row['party_id']; ?>')">
-                <i class="fa-solid fa-trash"></i>
+                <td><button class="btn btn-danger" onclick="deleteConfirm('delete_client.php?client_id=<?php echo $row['party_id']; ?>')">
+                        <i class="fa-solid fa-trash"></i>
                     </button></td>
              
             </tr>

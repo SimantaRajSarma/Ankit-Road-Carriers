@@ -6,14 +6,16 @@ error_reporting(0);
 
 include('pages/trip_search_functions.php');
 
-
 session_start();
 include("include/connection.php");
 
 if (!isset($_SESSION["admin_id"])) {
-    header("location:login.php");
+    header("location:index.php");
     exit();
 }
+
+// Initialize $result variable
+$result = null;
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -39,9 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 }
 
-
-    // SQL query to retrieve all data from the table
-    $sql = "SELECT 
+// SQL query to retrieve all data from the vehicle table
+$sql = "SELECT 
     trip_entry.trip_id,
     trip_entry.lr_no,
     trip_entry.lr_date,
@@ -52,11 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     trip_entry.unload_wt,
     trip_entry.party_rate,
     trip_entry.trptr_rate,
+    trip_entry.product_id,
     vehicle.VehicleNo AS vehicle_no,
     vehicle.OwnerType AS vehicle_owner_type,
     driver.DriverName AS driver_name,
-    party.party_name,
-    products.product_name
+    party.party_name,products.product_name
 FROM 
     trip_entry
 JOIN 
@@ -65,12 +66,14 @@ JOIN
     driver ON trip_entry.driver_id = driver.DriverID
 JOIN 
     party ON trip_entry.party_id = party.party_id
-JOIN 
+    
+    JOIN 
     products ON trip_entry.product_id = products.product_id";
 
-    // Execute the query
+// Execute the query only if $result is not assigned from the form submission handling
+if ($result === null) {
     $result = $conn->query($sql);
-
+}
 ?>
 
 
@@ -87,8 +90,8 @@ JOIN
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="https://ankitroadcarrier.in/logon33.jpg" rel="icon">
-  <link href="https://ankitroadcarrier.in/logon33.jpg" rel="apple-touch-icon">
+  <link href="https://ankitroadcarrier.in/arc_logo.jpg" rel="icon">
+  <link href="https://ankitroadcarrier.in/arc_logo.jpg" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -192,7 +195,7 @@ JOIN
 
     /* CSS for the search form */
 .search-form {
-    max-width: 600px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 20px;
     background-color: #E4FBFF;
@@ -255,10 +258,7 @@ label {
 include('include/header.php');
 
 ?>
-<audio id="notificationSound">
-    <source src="notification.wav" type="audio/mpeg">
-   
-</audio>
+
 
 <main id="main" class="main">
 
@@ -328,7 +328,7 @@ function deleteConfirm(obj){
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 text-center">
             <button type="submit" class="btn btn-lg btn-primary"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;&nbsp;Search</button>
         </div>
     </div>
@@ -355,7 +355,7 @@ function deleteConfirm(obj){
                 <th scope="col" class="px-5">Driver Name</th>
                 <th scope="col" class="px-5">Party Name</th>
                 <th scope="col" class="px-5">Product Name</th>
-                <th scope="col" class="px-5" >Action</th>
+                <th scope="col"  >Action</th>
             </tr>
         </thead>
         <tbody>
@@ -380,11 +380,18 @@ function deleteConfirm(obj){
                     <td class="px-5"><?php echo $row['driver_name']; ?></td>
                     <td class="px-5"><?php echo $row['party_name']; ?></td>
                     <td class="px-5"><?php echo $row['product_name']; ?></td>
-                    <td>
-                        <button class="btn btn-danger">
-                            <i class="fa-solid fa-lock ms-auto"></i>
-                        </button>
-                    </td>
+                   <td>
+                       <!-- Example single danger button -->
+<div class="btn-group">
+  <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="fa-solid fa-eye"></i>&nbsp;View
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item fw-semibold" href="lr_entry_bill2.php?trip_id=<?php echo $row['trip_id']; ?>">Driver Copy</a></li>
+    <li><a class="dropdown-item fw-semibold" href="lr_entry_bill.php?trip_id=<?php echo $row['trip_id']; ?>">Consignor Copy</a></li>
+  </ul>
+</div>
+</td>
                 </tr>
             <?php 
                 $rank++; 

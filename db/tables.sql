@@ -53,7 +53,7 @@ CREATE TABLE `vehicle` (
 
 
 
-CREATE TABLE `Consignee_Details` (
+CREATE TABLE `consignee_Details` (
   `Consignee_id` int(11) PRIMARY KEY AUTO_INCREMENT,
   `Consignee_name` varchar(100) DEFAULT NULL,
   `Consignee_mobile` varchar(20) DEFAULT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE `Consignee_Details` (
 );
 
 
-CREATE TABLE `Consignor_Details` (
+CREATE TABLE `consignor_Details` (
   `Consignor_id` int(11) PRIMARY KEY AUTO_INCREMENT,
   `Consignor_name` varchar(100) DEFAULT NULL,
   `Consignor_mobile` varchar(20) DEFAULT NULL,
@@ -105,6 +105,7 @@ CREATE TABLE `trip_entry` (
   `unloading_charges` decimal(10,2) DEFAULT NULL,
   `labour_charges` decimal(10,2) DEFAULT NULL,
   `commission` decimal(10,2) DEFAULT NULL,
+  `advance_amount` decimal(10,2) DEFAULT NULL,
   `Consignor_id` int(11) DEFAULT NULL,
   `Consignee_id` int(11) DEFAULT NULL,
   `remarks` varchar(255) DEFAULT NULL,
@@ -112,8 +113,8 @@ CREATE TABLE `trip_entry` (
   FOREIGN KEY (`driver_id`) REFERENCES `driver` (`DriverID`) ON DELETE CASCADE,
   FOREIGN KEY (`party_id`) REFERENCES `party` (`party_id`) ON DELETE CASCADE,
   FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
-  FOREIGN KEY (`Consignor_id`) REFERENCES `Consignor_Details` (`Consignor_id`) ON DELETE SET NULL,
-  FOREIGN KEY (`Consignee_id`) REFERENCES `Consignee_Details` (`Consignee_id`) ON DELETE SET NULL
+  FOREIGN KEY (`Consignor_id`) REFERENCES `consignor_Details` (`Consignor_id`) ON DELETE SET NULL,
+  FOREIGN KEY (`Consignee_id`) REFERENCES `consignee_Details` (`Consignee_id`) ON DELETE SET NULL
 );
 
 CREATE TABLE `party_bill` (
@@ -122,7 +123,7 @@ CREATE TABLE `party_bill` (
     `party_id` INT NOT NULL,
     `bill_amount` DECIMAL(10, 2) DEFAULT NULL,
     `bill_date` DATE NOT NULL,
-    FOREIGN KEY (`party_id`) REFERENCES `party` (`party_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`party_id`) REFERENCES `party` (`party_id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `party_bill_lr` (

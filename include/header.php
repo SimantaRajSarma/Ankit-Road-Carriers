@@ -3,7 +3,7 @@
 
 <div class="d-flex align-items-center justify-content-between">
   <a href="dashboard.php" class="logo d-flex align-items-center">
-    
+    <img src="https://ankitroadcarrier.in/arc_logo.jpg" alt="" width="40" class="rounded-circle">
     <span class="d-none d-lg-block">Ankit Road Carrier</span>
   </a>
   <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -46,7 +46,7 @@
     <li class="nav-item dropdown pe-3">
 
       <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-        <!--<img src="../centre/images/6002957819_16887906934711_dp.jpg" alt="Profile" class="rounded-circle">-->
+        <img src="https://ankitroadcarrier.in/arc_logo.jpg" alt="Profile" class="rounded-circle">
        
         <span class="d-none d-md-block dropdown-toggle ps-2">Ankit Road Carrier</span>
 
@@ -267,7 +267,7 @@
 
     
       <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" href="password_change.php">
             <i class="fa-solid fa-key"></i>
               <span>Change Password</span>
             </a>

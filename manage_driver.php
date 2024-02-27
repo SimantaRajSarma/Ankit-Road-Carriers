@@ -145,10 +145,7 @@ if (!isset($_SESSION["admin_id"])) {
 include('include/header.php');
 
 ?>
-<audio id="notificationSound">
-    <source src="notification.wav" type="audio/mpeg">
-   
-</audio>
+
 
 <main id="main" class="main">
 
@@ -214,8 +211,8 @@ function deleteConfirm(obj){
                 <td><?php echo $row['LicenseNo'];?></td>
               
                   <td>
-                       <button class="btn btn-danger btn-sm" onclick="deleteConfirm('delete_driver.php?DriverID=<?php echo $row['DriverID']; ?>')">
-                       <i class="fa-solid fa-trash"></i>
+                       <button class="btn btn-danger" onclick="deleteConfirm('delete_driver.php?DriverID=<?php echo $row['DriverID']; ?>')">
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                   </td>
             </tr>
