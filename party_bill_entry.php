@@ -1,7 +1,7 @@
 <?php
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
-error_reporting(0);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+// error_reporting(0);
 
 session_start();
 include("include/connection.php");
@@ -9,7 +9,7 @@ include('pages/fetch_data.php');
 include('pages/party_bill_functions.php');
 
 if (!isset($_SESSION["admin_id"])) {
-    header("location:login.php");
+    header("location:index.php");
     exit();
 }
 
@@ -73,16 +73,38 @@ function calculateBillAmount($conn, $lrIds) {
 }
 
 
-// Function to insert data into party_bill table
-function insertPartyBill($conn, $bill_no, $partyId, $billAmount, $billDate) {
-    $sql = "INSERT INTO party_bill (bill_number, party_id, bill_amount, bill_date) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sids", $bill_no, $partyId, $billAmount, $billDate);
-    $stmt->execute();
-    $insertedBillId = $stmt->insert_id;
-    $stmt->close();
-    return $insertedBillId; // Return the ID of the inserted bill for further use
+function insertPartyBill($conn, $party_bill_no, $partyName, $billAmount, $attachment, $party_bill_date) {
+    // Define the target directory for uploads
+    $targetDir = "uploads/";
+
+    // Generate a unique file name for the uploaded attachment
+    $targetFile = $targetDir . uniqid() . '_' . basename($attachment['name']);
+
+    // Move the uploaded attachment to the target directory
+    if (move_uploaded_file($attachment['tmp_name'], $targetFile)) {
+        // Prepare the SQL statement
+        $sql = "INSERT INTO party_bill (bill_number, party_id, bill_amount, attachment, bill_date) VALUES (?, ?, ?, ?, ?)";
+        
+        // Prepare and bind parameters
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sidss", $party_bill_no, $partyName, $billAmount, $targetFile, $party_bill_date);
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            // Return the ID of the inserted record
+            return $stmt->insert_id;
+        } else {
+            // If insertion fails, delete the uploaded file and return false
+            unlink($targetFile);
+            return false;
+        }
+    } else {
+        // If moving the file fails, return false
+        return false;
+    }
 }
+
+
 
 // Function to insert data into party_bill_lr table
 function insertPartyBillLR($conn, $billId, $lrIds) {
@@ -103,14 +125,11 @@ $partyName = isset($_POST['party_name']) ? $_POST['party_name'] : '';
 $vehicleNumber = isset($_POST['vehicle_number']) ? $_POST['vehicle_number'] : '';
 $startDate = isset($_POST['start_date']) ? $_POST['start_date'] : '';
 $endDate = isset($_POST['end_date']) ? $_POST['end_date'] : '';
-$party_bill_no = isset($_POST['party_bill_no']) ? $_POST['party_bill_no'] : '';
-$party_bill_date = isset($_POST['party_bill_date']) ? $_POST['party_bill_date'] : '';
- 
+
 // Store search criteria in session variables
 $_SESSION['search_criteria'] = [
-    'partyName' => $partyName,
-    'party_bill_no' => $party_bill_no,
-    'party_bill_date' => $party_bill_date
+    'partyName' => $partyName
+
 ];
 
     // Conditions
@@ -160,37 +179,65 @@ if (!empty($partyName) && empty($vehicleNumber) && empty($startDate) && empty($e
 }
  
 
+// Function to update bill mode for LR IDs only when it changes
+function updateBillMode($billMode, $lrIds, $conn) {
+    foreach ($lrIds as $lrId) {
+        // Retrieve the current bill mode for the LR ID from the database
+        $sql = "SELECT bill_mode FROM trip_entry WHERE trip_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $lrId);
+        $stmt->execute();
+        $stmt->bind_result($currentBillMode);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Check if the new bill mode is different from the current one
+        if ($currentBillMode !== $billMode) {
+            // Update the bill mode in the database
+            $sql = "UPDATE trip_entry SET bill_mode = ? WHERE trip_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("si", $billMode, $lrId);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+}
+
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generate_bill'])) {
-    // Retrieve form data
-    $searchCriteria = $_SESSION['search_criteria'] ?? [];
 
-     // Access individual search criteria
-     $partyName = $searchCriteria['partyName'];
-     $party_bill_no = $searchCriteria['party_bill_no'];
-     $party_bill_date = $searchCriteria['party_bill_date'];
-     $lrIds = isset($_POST['selectedLRs']) ? $_POST['selectedLRs'] : [];
+            // Retrieve form data
+        $searchCriteria = $_SESSION['search_criteria'] ?? [];
+
+       // Access individual search criteria
+    $partyName = isset($searchCriteria['partyName']) ? $searchCriteria['partyName'] : '';
+    $party_bill_no = isset($_POST['party_bill_no']) ? $_POST['party_bill_no'] : '';
+    $party_bill_date = isset($_POST['party_bill_date']) ? $_POST['party_bill_date'] : '';
+    $bill_mode = isset($_POST['bill_mode']) ? $_POST['bill_mode'] : '';
+    $lrIds = isset($_POST['selectedLRs']) ? $_POST['selectedLRs'] : [];
+
 
       // Calculate total bill amount
     $billAmount = calculateBillAmount($conn, $lrIds);
 
-
     // Insert data into party_bill table
-    $insertedBillId = insertPartyBill($conn, $party_bill_no, $partyName, $billAmount, $party_bill_date);
+    $insertedBillId = insertPartyBill($conn, $party_bill_no, $partyName, $billAmount, $_FILES['attachment'] ,$party_bill_date);
     
 
     // Check if insertion into party_bill table was successful
     if ($insertedBillId) {
         // Insert data into party_bill_lr table
         insertPartyBillLR($conn, $insertedBillId, $lrIds);
+        updateBillMode($bill_mode, $lrIds, $conn);
 
         // Redirect to a success page or display a success message
         echo "<script>
-    setTimeout(function() {
-        alert('Bill generated successfully!');
-        window.location.href = 'party_bill_entry.php';
-    }, 3); // 3 milliseconds delay
-</script>";
+            setTimeout(function() {
+                alert('Bill generated successfully!');
+                window.location.href = 'party_bill_entry.php';
+            }, 3); // 3 milliseconds delay
+        </script>";
+        
     } else {
         // Handle insertion failure
         echo "<script>alert('Failed to generate bill. Please try again.');</script>";
@@ -215,8 +262,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generate_bill'])) {
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="https://ankitroadcarrier.in/logo.jpg" rel="icon">
-  <link href="https://ankitroadcarrier.in/logo.jpg" rel="apple-touch-icon">
+  <link href="https://ankitroadcarrier.in/arc_logo.jpg" rel="icon">
+  <link href="https://ankitroadcarrier.in/arc_logo.jpg" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -225,14 +272,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generate_bill'])) {
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
-  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="assets/vendor/fontawesome/fontawesome.js"></script>
+
   <!-- =======================================================
   * Template Name: NiceAdmin
   * Updated: Mar 09 2023 with Bootstrap v5.2.3
@@ -369,6 +413,7 @@ label {
     width: 20px; 
     height: 20px;
 }
+
     
     </style>
 
@@ -386,10 +431,6 @@ label {
 include('include/header.php');
 
 ?>
-<audio id="notificationSound">
-    <source src="notification.wav" type="audio/mpeg">
-   
-</audio>
 
 <main id="main" class="main">
 
@@ -431,8 +472,9 @@ function deleteConfirm(obj){
          <br>
        
          <form method="post" action="" class="search-form">
+    <h5 class="text-left fw-bold">Search By :-</h5><br>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="form-group">
                 <label for="party_name">Party Name:</label>
                 <select name="party_name" class="form-select" id="party_name">
@@ -445,21 +487,7 @@ function deleteConfirm(obj){
                 </select>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="fdate">From:</label>
-                <input type="date" class="form-control" id="fdate" name="fdate" value="<?php echo date('Y-m-d'); ?>">
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="tdate">To:</label>
-                <input type="date" class="form-control" id="tdate" name="tdate" value="<?php echo date('Y-m-d'); ?>">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-    <div class="col-md-4">
+        <div class="col-md-6">
             <div class="form-group">
                 <label for="vehicle_number">Vehicle No. :</label>
                 <select name="vehicle_number" class="form-select" id="vehicle_number">
@@ -472,20 +500,24 @@ function deleteConfirm(obj){
                 </select>
             </div>
         </div>
-        <div class="col-md-4">
+    </div>
+    <div class="row">
+        <div class="col-md-6">
             <div class="form-group">
-                <label for="party_bill_no">Bill No:</label>
-                <input type="text" class="form-control fw-bold" id="party_bill_no" name="party_bill_no" value="<?= $bill_number; ?>" readonly>
+                <label for="fdate">From:</label>
+                <input type="date" class="form-control" id="fdate" name="fdate" value="<?php echo date('Y-m-d'); ?>">
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="form-group">
-                <label for="party_bill_date">Bill Date:</label>
-                <input type="text" class="form-control fw-bold" id="party_bill_date" name="party_bill_date" value="<?php echo date('Y-m-d'); ?>" readonly>
+                <label for="tdate">To:</label>
+                <input type="date" class="form-control" id="tdate" name="tdate" value="<?php echo date('Y-m-d'); ?>">
             </div>
         </div>
+    </div>
+        <div class="row">
         <div class="col-md-12 pt-3 text-center">
-            <button type="submit" name="search" class="btn btn-lg btn-primary"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;&nbsp;Search</button>
+            <button type="submit" name="search" class="btn btn-lg btn-primary fw-semibold"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;&nbsp;Search</button>
         </div>
     </div>
 </form>
@@ -493,7 +525,8 @@ function deleteConfirm(obj){
  <br>
           <!-- Table with stripped rows -->
           <div class="table-responsive">
-          <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+          <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data">
+          <!-- <hr> -->
     <table class="table datatable table-hover">
         <thead>
             <tr>
@@ -523,8 +556,40 @@ function deleteConfirm(obj){
         <tbody>
         <?php
 // Check if $result is defined and not empty
-if (isset($result) && $result->num_rows > 0) {
-    // $rowCount = 0;
+if (isset($result) && $result->num_rows > 0) { ?>
+    <!-- // $rowCount = 0; -->
+    <div class="row">
+         <div class="col-md-2">
+            <div class="form-group">
+                <label for="party_bill_no">Bill No:</label>
+                <input type="text" class="form-control fw-bold" id="party_bill_no" name="party_bill_no" value="<?= $bill_number; ?>" readonly>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="party_bill_date">Bill Date:</label>
+                <input type="text" class="form-control fw-bold" id="party_bill_date" name="party_bill_date" value="<?php echo date('Y-m-d'); ?>" readonly>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="party_bill_date">Bill Mode:</label>
+                <select id="bill_mode" name="bill_mode" class="form-select fw-bold" required>
+                    <option value="TO BE BILLED">TO BE BILLED</option>
+                    <option value="TO PAY">TO PAY</option>
+                    <option value="PAID">PAID</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="attachment">Add attachment:</label>
+                <input type="file" class="form-control" id="attachment" name="attachment" accept="image/*, application/pdf">
+            </div>
+        </div>
+    </div>
+    <hr>
+   <?php
     while ($row = $result->fetch_assoc()) {
         // $rowCount++;
 ?>

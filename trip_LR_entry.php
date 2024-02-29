@@ -276,7 +276,7 @@ echo "<script>
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
-              <div class="card-body p-3">
+              <div class="card-body pb-3">
                 <h5 class="card-title text-center pb-5">Trip / LR Entry</h5>
                 <!-- <div class="alert alert-success alert-dismissible fade show" role="alert">
         Hello
@@ -291,7 +291,7 @@ echo "<script>
 
                 >
                 <div class="row">
-                <div class="col-md-3 col-sm-12">
+                <div class="col-md-3 col-sm-12 pb-3">
                     <label for="vehicle_no" class="form-label fw-bold">Vehicle No :</label>
                  <select name="vehicle_no" class="form-select" id="vehicle_no" required>
                     <option selected disabled value="">Select vehicle...</option>
@@ -303,7 +303,7 @@ echo "<script>
                 </select>
                 </div>
 
-                <div class="col-md-3 col-sm-12">
+                <div class="col-md-3 col-sm-12 pb-3">
                   <label for="lr_date" class="form-label fw-bold">LR Date :</label>
                   <input
                       type="date"
@@ -315,7 +315,7 @@ echo "<script>
               </div>
              
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
     <label for="lr_type" class="form-label fw-bold">LR Type:</label>
     <select id="lr_type" name="lr_type" class="form-select fw-semibold">
         
@@ -326,7 +326,7 @@ echo "<script>
 </div>
 
 
-<div class="col-md-3 col-sm-12">
+<div class="col-md-3 col-sm-12 pb-3">
                 <label for="against_trip_id" class="form-label fw-bold">Agnst Trip ID :</label>
                 <input
                     type="number"
@@ -339,7 +339,7 @@ echo "<script>
             </div>
 
     
-<div class="col-md-3 col-sm-12">
+<div class="col-md-3 col-sm-12 pb-3">
                 <label for="lr_number" class="form-label fw-bold">LR No :</label>
                 <input
                 type="text"
@@ -351,7 +351,7 @@ echo "<script>
             </div>
 
             
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="invoice_no" class="form-label fw-bold">Invoice No :</label>
                 <input
                 type="text"
@@ -363,7 +363,7 @@ echo "<script>
             </div>
 
                     
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
     <label for="loading_wt" class="form-label fw-bold">Loading Wt (KG) :</label>
     <input
         type="number"
@@ -380,7 +380,7 @@ echo "<script>
 
 
                         
-<div class="col-md-3 col-sm-12">
+<div class="col-md-3 col-sm-12 pb-3">
     <label for="unload_wt" class="form-label fw-bold">Unload Wt (KG) :</label>
     <input
         type="number"
@@ -395,7 +395,7 @@ echo "<script>
     />
 </div>
 
-<div class="col-md-6 col-sm-12">
+<div class="col-md-6 col-sm-12 pb-3">
                 <label for="e_way_bill_no" class="form-label fw-bold">E Way Bill No. :</label>
                 <input
                 type="number"
@@ -408,7 +408,7 @@ echo "<script>
             </div>
 
             
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-6 col-sm-12 pb-3">
                 <label for="e_way_bill_date" class="form-label fw-bold">E Way Bill Date :</label>
                 <input
                 type="date"
@@ -421,7 +421,7 @@ echo "<script>
 
 
 
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-6 col-sm-12 pb-3">
                 <label for="product_name" class="form-label fw-bold">Product Name :</label>
                 <select name="product_name" class="form-select">
                     <option selected disabled>Select product...</option>
@@ -434,7 +434,7 @@ echo "<script>
             </div>
 
             
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
     <label for="party_rate" class="form-label fw-bold">Party Rate :</label>
     <input
         type="number"
@@ -448,7 +448,7 @@ echo "<script>
     />
 </div>
     
-<div class="col-md-3 col-sm-12">
+<div class="col-md-3 col-sm-12 pb-3">
     <label for="transporter_rate" class="form-label fw-bold">Trptr Rate :</label>
     <input
         type="number"
@@ -462,18 +462,18 @@ echo "<script>
     />
 </div>
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
     <label for="source" class="form-label fw-bold">Source:</label>
     <input type="text" name="source" class="form-control" placeholder="Enter Source..." required>
 </div>
 
-<div class="col-md-3 col-sm-12">
+<div class="col-md-3 col-sm-12 pb-3">
     <label for="destination" class="form-label fw-bold">Destination</label>
     <input type="text" name="destination" class="form-control" placeholder="Enter Destination..." required>
 </div>
 
 
-<div class="col-md-3 col-sm-12">
+<div class="col-md-3 col-sm-12 pb-3">
     <label for="party_rate_type" class="form-label fw-bold">Party Rate Type:</label>
     <input
         type="text"
@@ -486,7 +486,7 @@ echo "<script>
 
 
 
-<div class="col-md-3 col-sm-12">
+<div class="col-md-3 col-sm-12 pb-3">
     <label for="transporter_rate_type" class="form-label fw-bold">Trptr Rate Type:</label>
     <input
         type="text"
@@ -499,7 +499,7 @@ echo "<script>
 
 
 
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-6 col-sm-12 pb-3">
     <label for="bill_mode" class="form-label fw-bold">Bill Mode:</label>
     <select id="bill_mode" name="bill_mode" class="form-select" required>
         <option value="TO BE BILLED">TO BE BILLED</option>
@@ -510,7 +510,7 @@ echo "<script>
 </div>
 
 
-   <div class="col-md-6 col-sm-12">
+   <div class="col-md-6 col-sm-12 pb-3">
     <label for="driver_name" class="form-label fw-bold">Driver Name :</label>
     <select name="driver_name" class="form-select" required>
         <option value="" selected disabled>Select driver...</option>
@@ -527,7 +527,7 @@ echo "<script>
 
 
 
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-6 col-sm-12 pb-3">
     <label for="party_name" class="form-label fw-bold">Party Name : (For Billing)</label>
     <select name="party_name" class="form-select" required>
         <option value="" selected disabled>Select party...</option>
@@ -543,7 +543,7 @@ echo "<script>
             
 
 
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-6 col-sm-12 pb-3">
                 <label for="vehicle_owner" class="form-label fw-bold">Vehicle Owner :</label>
                 <input
                 type="text"
@@ -554,7 +554,7 @@ echo "<script>
                 />
             </div>
     
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-6 col-sm-12 pb-3">
             <label for="bill_freight" class="form-label fw-bold">Bill Freight :</label>
                 <input
                     style="background-color: #C3ACD0"
@@ -569,7 +569,7 @@ echo "<script>
 
 
              
-        <div class="col-md-6 col-sm-12">
+        <div class="col-md-6 col-sm-12 pb-3">
     <label for="vehicle_freight" class="form-label fw-bold">Vehicle Freight :</label>
     <input
     style="background-color: #C3ACD0"
@@ -583,7 +583,7 @@ echo "<script>
 </div>
 
 <!-- Other Charges -->
-<div class="col-md-4 col-sm-12">
+<div class="col-md-4 col-sm-12 pb-3">
             <label for="diesel_charges" class="form-label fw-bold">Diesel Charge :</label>
                 <input
                     type="number"
@@ -596,7 +596,7 @@ echo "<script>
                 />
         </div>
 
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12 pb-3">
             <label for="pump_cash" class="form-label fw-bold">Pump Cash :</label>
                 <input
                     type="number"
@@ -609,7 +609,7 @@ echo "<script>
                 />
         </div>
 
-        <div class="col-md-4 col-sm-12 ">
+        <div class="col-md-4 col-sm-12 pb-3">
             <label for="cash_in_hand" class="form-label fw-bold">Case in Hand :</label>
                 <input
                     type="number"
@@ -622,7 +622,7 @@ echo "<script>
                 />
         </div>
 
-        <div class="col-md-4 col-sm-12 ">
+        <div class="col-md-4 col-sm-12 pb-3">
             <label for="rtgs_charge" class="form-label fw-bold">RTGS Charge :</label>
                 <input
                     type="number"
@@ -634,7 +634,7 @@ echo "<script>
                 />
         </div>
 
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12 pb-3">
             <label for="unloading_charges" class="form-label fw-bold">Unloading Charge :</label>
                 <input
                     type="number"
@@ -646,7 +646,7 @@ echo "<script>
                 />
         </div>
 
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12 pb-3">
             <label for="labour_charges" class="form-label fw-bold">Labour Charge :</label>
                 <input
                     type="number"
@@ -657,7 +657,7 @@ echo "<script>
                     min="0"
                 />
         </div>
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12 pb-3">
             <label for="commission" class="form-label fw-bold">Commission :</label>
                 <input
                     type="number"
@@ -669,8 +669,8 @@ echo "<script>
                 />
         </div>
 
-            <div class="row p-3">
-            <div class="col-md-3 col-sm-12">
+            <div class="row pb-3">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="bill_balance_amount" class="form-label fw-bold">Balance Amount :</label>
                 <input
                 type="number"
@@ -683,7 +683,7 @@ echo "<script>
                 />
             </div>
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="bill_total_advance" class="form-label fw-bold">Total Advance :</label>
                 <input
                 type="number"
@@ -697,7 +697,7 @@ echo "<script>
 
 
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="statement_balance_amount" class="form-label fw-bold">Balance Anount :</label>
                 <input
                 type="number"
@@ -712,7 +712,7 @@ echo "<script>
 
 
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="statement_total_advance" class="form-label fw-bold">Total Advance :</label>
                 <input
                 type="number" id="advancefr"
@@ -728,14 +728,14 @@ echo "<script>
             
             <h5 class="card-title text-center">Consignor Details</h5>
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
               <label for="consignor_select" class="form-label fw-bold form-label-sm">Select Consignor:</label>
               <select id="consignor_select" class="form-select form-control-sm">
                   <option value="">Select Consignor</option>
                   <!-- Consignor names will be dynamically populated here -->
               </select>
           </div>
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="consignor_name" class="form-label fw-bold">Consignor Name :</label>
                 <input
                 type="text"
@@ -750,7 +750,7 @@ echo "<script>
 
 
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="consignor_mobile" class="form-label fw-bold">Mobile No :</label>
                 <input
                 type="number"
@@ -765,7 +765,7 @@ echo "<script>
 
 
             
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="consignor_gstin" class="form-label fw-bold">GSTIN NO :</label>
                 <input
                 type="text"
@@ -778,7 +778,7 @@ echo "<script>
             </div>
 
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="consignor_email" class="form-label fw-bold">Email :</label>
                 <input
                 type="email"
@@ -792,21 +792,21 @@ echo "<script>
 
 
 
-            <div class="col-12">
+            <div class="col-12 pb-3">
     <label for="consignor_address" class="form-label fw-bold">Address:</label>
     <textarea id="consignor_address" name="consignor_address" class="form-control" placeholder="Enter Client Address" rows="3"></textarea>
 </div>
 
 <h5 class="card-title text-center">Consignee Details</h5>
 
-        <div class="col-md-3 col-sm-12">
+        <div class="col-md-3 col-sm-12 pb-3">
               <label for="consignee_select" class="form-label fw-bold">Select Consignee:</label>
               <select id="consignee_select" class="form-select form-control-sm">
                   <option value="">Select Consignee</option>
                   <!-- Consignee names will be dynamically populated here -->
               </select>
           </div>
-             <div class="col-md-3 col-sm-12">
+             <div class="col-md-3 col-sm-12 pb-3">
                 <label for="consignee_name" class="form-label fw-bold">Consignee Name :</label>
                 <input
                 type="text"
@@ -820,7 +820,7 @@ echo "<script>
 
 
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="consignee_mobile" class="form-label fw-bold">Mobile No :</label>
                 <input
                 type="number" required
@@ -835,7 +835,7 @@ echo "<script>
 
 
             
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="consignee_gstin" class="form-label fw-bold">GSTIN NO :</label>
                 <input
                 type="text"
@@ -849,7 +849,7 @@ echo "<script>
             </div>
 
 
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 pb-3">
                 <label for="consignee_email" class="form-label fw-bold">Email :</label>
                 <input
                 type="email"
@@ -861,12 +861,12 @@ echo "<script>
                 />
             </div>
             
-            <div class="col-12">
+            <div class="col-12 pb-3">
     <label for="consignee_address" class="form-label fw-bold">Address:</label>
     <textarea id="consignee_address" name="consignee_address" class="form-control" placeholder="Enter Client Address" rows="3"></textarea>
 </div>
 
-<div class="col-12">
+<div class="col-12 pb-3">
     <label for="remarks" class="form-label fw-bold">Remarks:</label>
     <textarea id="remarks" name="remarks" class="form-control" placeholder="Remarks..." rows="3"></textarea>
 </div>

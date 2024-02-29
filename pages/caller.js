@@ -169,3 +169,19 @@ $(document).ready(function () {
   // Fetch consignee names when the page loads
   fetchConsigneeNames();
 });
+
+$(document).ready(function () {
+  // Function to handle file upload
+  $("#attachment").change(function () {
+    var fileInput = document.getElementById("attachment");
+    var filePath = fileInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.pdf)$/i;
+
+    // Check if the selected file has an allowed extension
+    if (!allowedExtensions.exec(filePath)) {
+      alert("Invalid file type. Please select a JPG, JPEG, PNG, or PDF file.");
+      fileInput.value = "";
+      return false;
+    }
+  });
+});
