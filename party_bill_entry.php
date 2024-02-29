@@ -1,252 +1,4 @@
-<?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-// error_reporting(0);
 
-session_start();
-include("include/connection.php");
-include('pages/fetch_data.php');
-include('pages/party_bill_functions.php');
-
-if (!isset($_SESSION["admin_id"])) {
-    header("location:index.php");
-    exit();
-}
-
-
-// Function to generate a unique LR number
-function generateBillNumber($conn) {
-    
-    $query = "SELECT MAX(bill_number) AS max_bill_no FROM party_bill";
-    $result = mysqli_query($conn, $query);
-    $row = mysqli_fetch_assoc($result);
-    $max_bill_no = $row['max_bill_no'];
-
-    if ($max_bill_no === null) {
-        return 1;
-    }
-
-    $next_bill_no = $max_bill_no + 1;
-
-    $query = "SELECT COUNT(*) AS count FROM party_bill WHERE bill_number = $next_bill_no";
-    $result = mysqli_query($conn, $query);
-    $row = mysqli_fetch_assoc($result);
-    $count = $row['count'];
-
-    while ($count > 0) {
-        $next_bill_no++;
-        $query = "SELECT COUNT(*) AS count FROM party_bill WHERE bill_number = $next_bill_no";
-        $result = mysqli_query($conn, $query);
-        $row = mysqli_fetch_assoc($result);
-        $count = $row['count'];
-    }
-
-    // Return the unique LR number
-    return $next_bill_no;
-}
-
-$bill_number = generateBillNumber($conn);
-
-
-// Function to calculate total bill amount based on selected LR IDs
-function calculateBillAmount($conn, $lrIds) {
-    $totalAmount = 0;
-    
-    // Iterate through each selected LR ID
-    foreach ($lrIds as $lrId) {
-        // Query the freight amount for the LR ID from the trip_entry table
-        $sql = "SELECT bill_freight FROM trip_entry WHERE trip_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $lrId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        // If a record is found, add the freight amount to the total amount
-        if ($row = $result->fetch_assoc()) {
-            $totalAmount += $row['bill_freight'];
-        }
-        
-        $stmt->close();
-    }
-    
-    return $totalAmount;
-}
-
-
-function insertPartyBill($conn, $party_bill_no, $partyName, $billAmount, $attachment, $party_bill_date) {
-    // Define the target directory for uploads
-    $targetDir = "uploads/";
-
-    // Generate a unique file name for the uploaded attachment
-    $targetFile = $targetDir . uniqid() . '_' . basename($attachment['name']);
-
-    // Move the uploaded attachment to the target directory
-    if (move_uploaded_file($attachment['tmp_name'], $targetFile)) {
-        // Prepare the SQL statement
-        $sql = "INSERT INTO party_bill (bill_number, party_id, bill_amount, attachment, bill_date) VALUES (?, ?, ?, ?, ?)";
-        
-        // Prepare and bind parameters
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sidss", $party_bill_no, $partyName, $billAmount, $targetFile, $party_bill_date);
-
-        // Execute the statement
-        if ($stmt->execute()) {
-            // Return the ID of the inserted record
-            return $stmt->insert_id;
-        } else {
-            // If insertion fails, delete the uploaded file and return false
-            unlink($targetFile);
-            return false;
-        }
-    } else {
-        // If moving the file fails, return false
-        return false;
-    }
-}
-
-
-
-// Function to insert data into party_bill_lr table
-function insertPartyBillLR($conn, $billId, $lrIds) {
-    $sql = "INSERT INTO party_bill_lr (bill_id, lr_id) VALUES (?, ?)";
-    $stmt = $conn->prepare($sql);
-    foreach ($lrIds as $lrId) {
-        $stmt->bind_param("ii", $billId, $lrId);
-        $stmt->execute();
-    }
-    $stmt->close();
-}
-
-
-// Check if the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search'])) {
-
-$partyName = isset($_POST['party_name']) ? $_POST['party_name'] : '';
-$vehicleNumber = isset($_POST['vehicle_number']) ? $_POST['vehicle_number'] : '';
-$startDate = isset($_POST['start_date']) ? $_POST['start_date'] : '';
-$endDate = isset($_POST['end_date']) ? $_POST['end_date'] : '';
-
-// Store search criteria in session variables
-$_SESSION['search_criteria'] = [
-    'partyName' => $partyName
-
-];
-
-    // Conditions
-if (!empty($partyName) && empty($vehicleNumber) && empty($startDate) && empty($endDate)) {
-    // Search by Party Name Only
-    $result = fetchTripsByPartyName($conn, $partyName);
-} elseif (empty($partyName) && !empty($vehicleNumber) && empty($startDate) && empty($endDate)) {
-    // Search by Vehicle Number Only
-    $result = fetchTripsByVehicle($conn, $vehicleNumber);
-} elseif (empty($partyName) && empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
-    // Search by Start Date and End Date Only
-    $result = fetchTripsByDate($conn, $startDate, $endDate);
-} elseif (!empty($partyName) && !empty($vehicleNumber) && empty($startDate) && empty($endDate)) {
-    // Search by Party Name and Vehicle Number
-    $result = fetchTripsByPartyNameAndVehicle($conn, $partyName, $vehicleNumber);
-} elseif (!empty($partyName) && empty($vehicleNumber) && !empty($startDate) && empty($endDate)) {
-    // Search by Party Name and Start Date
-    echo "<script>alert('Please provide additional search criteria.')</script>";
-} elseif (!empty($partyName) && empty($vehicleNumber) && empty($startDate) && !empty($endDate)) {
-    // Search by Party Name and End Date
-    echo "<script>alert('Please provide additional search criteria.')</script>";
-} elseif (empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && empty($endDate)) {
-    // Search by Vehicle Number and Start Date
-    echo "<script>alert('Please provide additional search criteria.')</script>";
-} elseif (empty($partyName) && !empty($vehicleNumber) && empty($startDate) && !empty($endDate)) {
-    // Search by Vehicle Number and End Date
-    echo "<script>alert('Please provide additional search criteria.')</script>";
-} elseif (!empty($partyName) && empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
-    // Search by Start Date, End Date, and Party Name
-    $result = fetchTripsByPartyNameAndDate($conn, $partyName, $startDate, $endDate);
-} elseif (empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
-    // Search by Start Date, End Date, and Vehicle Number
-    $result = fetchTripsByVehicleAndDate($conn, $vehicleNumber, $startDate, $endDate);
-} elseif (!empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && empty($endDate)) {
-    // Search by Party Name, Vehicle Number, and Start Date
-    $result = fetchTripsByPartyNameAndVehicle($conn, $partyName, $vehicleNumber);
-} elseif (!empty($partyName) && !empty($vehicleNumber) && empty($startDate) && !empty($endDate)) {
-    // Search by Party Name, Vehicle Number, and End Date
-    $result = fetchTripsByPartyNameAndVehicle($conn, $partyName, $vehicleNumber);
-} elseif (!empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
-    // Search by Party Name, Vehicle Number, Start Date, and End Date
-    $result = fetchTripsByPartyNameVehicleAndDate($conn, $partyName, $vehicleNumber, $startDate, $endDate);
-} else {
-    echo "<script>alert('Please provide at least one valid search criteria.')</script>";
-}
-  
-}
- 
-
-// Function to update bill mode for LR IDs only when it changes
-function updateBillMode($billMode, $lrIds, $conn) {
-    foreach ($lrIds as $lrId) {
-        // Retrieve the current bill mode for the LR ID from the database
-        $sql = "SELECT bill_mode FROM trip_entry WHERE trip_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $lrId);
-        $stmt->execute();
-        $stmt->bind_result($currentBillMode);
-        $stmt->fetch();
-        $stmt->close();
-
-        // Check if the new bill mode is different from the current one
-        if ($currentBillMode !== $billMode) {
-            // Update the bill mode in the database
-            $sql = "UPDATE trip_entry SET bill_mode = ? WHERE trip_id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("si", $billMode, $lrId);
-            $stmt->execute();
-            $stmt->close();
-        }
-    }
-}
-
-// Check if the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generate_bill'])) {
-
-            // Retrieve form data
-        $searchCriteria = $_SESSION['search_criteria'] ?? [];
-
-       // Access individual search criteria
-    $partyName = isset($searchCriteria['partyName']) ? $searchCriteria['partyName'] : '';
-    $party_bill_no = isset($_POST['party_bill_no']) ? $_POST['party_bill_no'] : '';
-    $party_bill_date = isset($_POST['party_bill_date']) ? $_POST['party_bill_date'] : '';
-    $bill_mode = isset($_POST['bill_mode']) ? $_POST['bill_mode'] : '';
-    $lrIds = isset($_POST['selectedLRs']) ? $_POST['selectedLRs'] : [];
-
-
-      // Calculate total bill amount
-    $billAmount = calculateBillAmount($conn, $lrIds);
-
-    // Insert data into party_bill table
-    $insertedBillId = insertPartyBill($conn, $party_bill_no, $partyName, $billAmount, $_FILES['attachment'] ,$party_bill_date);
-    
-
-    // Check if insertion into party_bill table was successful
-    if ($insertedBillId) {
-        // Insert data into party_bill_lr table
-        insertPartyBillLR($conn, $insertedBillId, $lrIds);
-        updateBillMode($bill_mode, $lrIds, $conn);
-
-        // Redirect to a success page or display a success message
-        echo "<script>
-            setTimeout(function() {
-                alert('Bill generated successfully!');
-                window.location.href = 'party_bill_entry.php';
-            }, 3); // 3 milliseconds delay
-        </script>";
-        
-    } else {
-        // Handle insertion failure
-        echo "<script>alert('Failed to generate bill. Please try again.');</script>";
-    }
-
-    // Clear the session variables after generating the bill
-    unset($_SESSION['search_criteria']);
-}
- ?>
 
 
 
@@ -276,6 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generate_bill'])) {
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="assets/vendor/fontawesome/fontawesome.js"></script>
+  <!-- SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- =======================================================
   * Template Name: NiceAdmin
@@ -420,6 +174,273 @@ label {
 </head>
 
 <body>
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+// error_reporting(0);
+
+session_start();
+include("include/connection.php");
+include('pages/fetch_data.php');
+include('pages/party_bill_functions.php');
+
+if (!isset($_SESSION["admin_id"])) {
+    header("location:index.php");
+    exit();
+}
+
+
+// Function to generate a unique LR number
+function generateBillNumber($conn) {
+    
+    $query = "SELECT MAX(bill_number) AS max_bill_no FROM party_bill";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    $max_bill_no = $row['max_bill_no'];
+
+    if ($max_bill_no === null) {
+        return 1;
+    }
+
+    $next_bill_no = $max_bill_no + 1;
+
+    $query = "SELECT COUNT(*) AS count FROM party_bill WHERE bill_number = $next_bill_no";
+    $result = mysqli_query($conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    $count = $row['count'];
+
+    while ($count > 0) {
+        $next_bill_no++;
+        $query = "SELECT COUNT(*) AS count FROM party_bill WHERE bill_number = $next_bill_no";
+        $result = mysqli_query($conn, $query);
+        $row = mysqli_fetch_assoc($result);
+        $count = $row['count'];
+    }
+
+    // Return the unique LR number
+    return $next_bill_no;
+}
+
+$bill_number = generateBillNumber($conn);
+
+
+// Function to calculate total bill amount based on selected LR IDs
+function calculateBillAmount($conn, $lrIds) {
+    $totalAmount = 0;
+    
+    // Iterate through each selected LR ID
+    foreach ($lrIds as $lrId) {
+        // Query the freight amount for the LR ID from the trip_entry table
+        $sql = "SELECT bill_freight FROM trip_entry WHERE trip_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $lrId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        // If a record is found, add the freight amount to the total amount
+        if ($row = $result->fetch_assoc()) {
+            $totalAmount += $row['bill_freight'];
+        }
+        
+        $stmt->close();
+    }
+    
+    return $totalAmount;
+}
+
+function insertPartyBill($conn, $party_bill_no, $partyName, $billAmount, $attachment, $party_bill_date) {
+    // Check if attachment was provided
+    if (!empty($attachment['name'])) {
+        // Define the target directory for uploads
+        $targetDir = "uploads/";
+
+        // Generate a unique file name for the uploaded attachment
+        $targetFile = $targetDir . uniqid() . '_' . basename($attachment['name']);
+
+        // Move the uploaded attachment to the target directory
+        if (move_uploaded_file($attachment['tmp_name'], $targetFile)) {
+            // Prepare the SQL statement
+            $sql = "INSERT INTO party_bill (bill_number, party_id, bill_amount, attachment, bill_date) VALUES (?, ?, ?, ?, ?)";
+            
+            // Prepare and bind parameters
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("sidss", $party_bill_no, $partyName, $billAmount, $targetFile, $party_bill_date);
+        } else {
+            // If moving the file fails, return false
+            return false;
+        }
+    } else {
+        // If no attachment provided, insert NULL for the attachment column
+        // Prepare the SQL statement without the attachment parameter
+        $sql = "INSERT INTO party_bill (bill_number, party_id, bill_amount, bill_date) VALUES (?, ?, ?, ?)";
+        
+        // Prepare and bind parameters without the attachment parameter
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sids", $party_bill_no, $partyName, $billAmount, $party_bill_date);
+    }
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        // Return the ID of the inserted record
+        return $stmt->insert_id;
+    } else {
+        // If insertion fails, return false
+        return false;
+    }
+}
+
+
+
+
+// Function to insert data into party_bill_lr table
+function insertPartyBillLR($conn, $billId, $lrIds) {
+    $sql = "INSERT INTO party_bill_lr (bill_id, lr_id) VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    foreach ($lrIds as $lrId) {
+        $stmt->bind_param("ii", $billId, $lrId);
+        $stmt->execute();
+    }
+    $stmt->close();
+}
+
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search'])) {
+
+$partyName = isset($_POST['party_name']) ? $_POST['party_name'] : '';
+$vehicleNumber = isset($_POST['vehicle_number']) ? $_POST['vehicle_number'] : '';
+$startDate = isset($_POST['start_date']) ? $_POST['start_date'] : '';
+$endDate = isset($_POST['end_date']) ? $_POST['end_date'] : '';
+
+// Store search criteria in session variables
+$_SESSION['search_criteria'] = [
+    'partyName' => $partyName
+
+];
+
+    // Conditions
+if (!empty($partyName) && empty($vehicleNumber) && empty($startDate) && empty($endDate)) {
+    // Search by Party Name Only
+    $result = fetchTripsByPartyName($conn, $partyName);
+} elseif (empty($partyName) && !empty($vehicleNumber) && empty($startDate) && empty($endDate)) {
+    // Search by Vehicle Number Only
+    $result = fetchTripsByVehicle($conn, $vehicleNumber);
+} elseif (empty($partyName) && empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
+    // Search by Start Date and End Date Only
+    $result = fetchTripsByDate($conn, $startDate, $endDate);
+} elseif (!empty($partyName) && !empty($vehicleNumber) && empty($startDate) && empty($endDate)) {
+    // Search by Party Name and Vehicle Number
+    $result = fetchTripsByPartyNameAndVehicle($conn, $partyName, $vehicleNumber);
+} elseif (!empty($partyName) && empty($vehicleNumber) && !empty($startDate) && empty($endDate)) {
+    // Search by Party Name and Start Date
+    echo "<script>alert('Please provide additional search criteria.')</script>";
+} elseif (!empty($partyName) && empty($vehicleNumber) && empty($startDate) && !empty($endDate)) {
+    // Search by Party Name and End Date
+    echo "<script>alert('Please provide additional search criteria.')</script>";
+} elseif (empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && empty($endDate)) {
+    // Search by Vehicle Number and Start Date
+    echo "<script>alert('Please provide additional search criteria.')</script>";
+} elseif (empty($partyName) && !empty($vehicleNumber) && empty($startDate) && !empty($endDate)) {
+    // Search by Vehicle Number and End Date
+    echo "<script>alert('Please provide additional search criteria.')</script>";
+} elseif (!empty($partyName) && empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
+    // Search by Start Date, End Date, and Party Name
+    $result = fetchTripsByPartyNameAndDate($conn, $partyName, $startDate, $endDate);
+} elseif (empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
+    // Search by Start Date, End Date, and Vehicle Number
+    $result = fetchTripsByVehicleAndDate($conn, $vehicleNumber, $startDate, $endDate);
+} elseif (!empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && empty($endDate)) {
+    // Search by Party Name, Vehicle Number, and Start Date
+    $result = fetchTripsByPartyNameAndVehicle($conn, $partyName, $vehicleNumber);
+} elseif (!empty($partyName) && !empty($vehicleNumber) && empty($startDate) && !empty($endDate)) {
+    // Search by Party Name, Vehicle Number, and End Date
+    $result = fetchTripsByPartyNameAndVehicle($conn, $partyName, $vehicleNumber);
+} elseif (!empty($partyName) && !empty($vehicleNumber) && !empty($startDate) && !empty($endDate)) {
+    // Search by Party Name, Vehicle Number, Start Date, and End Date
+    $result = fetchTripsByPartyNameVehicleAndDate($conn, $partyName, $vehicleNumber, $startDate, $endDate);
+} else {
+    echo "<script>alert('Please provide at least one valid search criteria.')</script>";
+}
+  
+}
+ 
+
+// Function to update bill mode for LR IDs only when it changes
+function updateBillMode($billMode, $lrIds, $conn) {
+    foreach ($lrIds as $lrId) {
+        // Retrieve the current bill mode for the LR ID from the database
+        $sql = "SELECT bill_mode FROM trip_entry WHERE trip_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $lrId);
+        $stmt->execute();
+        $stmt->bind_result($currentBillMode);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Check if the new bill mode is different from the current one
+        if ($currentBillMode !== $billMode) {
+            // Update the bill mode in the database
+            $sql = "UPDATE trip_entry SET bill_mode = ? WHERE trip_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("si", $billMode, $lrId);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+}
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generate_bill'])) {
+
+            // Retrieve form data
+        $searchCriteria = $_SESSION['search_criteria'] ?? [];
+
+       // Access individual search criteria
+    $partyName = isset($searchCriteria['partyName']) ? $searchCriteria['partyName'] : '';
+    $party_bill_no = isset($_POST['party_bill_no']) ? $_POST['party_bill_no'] : '';
+    $party_bill_date = isset($_POST['party_bill_date']) ? $_POST['party_bill_date'] : '';
+    $bill_mode = isset($_POST['bill_mode']) ? $_POST['bill_mode'] : '';
+    $attachment = isset($_FILES['attachment']) ? $_FILES['attachment'] : '';
+    $lrIds = isset($_POST['selectedLRs']) ? $_POST['selectedLRs'] : [];
+
+
+      // Calculate total bill amount
+    $billAmount = calculateBillAmount($conn, $lrIds);
+
+    // Insert data into party_bill table
+    $insertedBillId = insertPartyBill($conn, $party_bill_no, $partyName, $billAmount, $attachment ,$party_bill_date);
+    
+
+    // Check if insertion into party_bill table was successful
+    if ($insertedBillId) {
+        // Insert data into party_bill_lr table
+        insertPartyBillLR($conn, $insertedBillId, $lrIds);
+        updateBillMode($bill_mode, $lrIds, $conn);
+
+        // Redirect to a success page or display a success message
+        echo "<script>
+    setTimeout(function() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Bill generated successfully!',
+            showConfirmButton: false,
+            timer: 2000  // Adjust the timer as needed (in milliseconds)
+        }).then(function() {
+            window.location.href = 'party_bill_entry.php';
+        });
+    }, 3); // 3 milliseconds delay
+</script>";
+        
+    } else {
+        // Handle insertion failure
+        echo "<script>alert('Failed to generate bill. Please try again.');</script>";
+    }
+
+    // Clear the session variables after generating the bill
+    unset($_SESSION['search_criteria']);
+}
+ ?>
     
      <div id="preloader">
         <div class="spinner-border colorful-spinner" role="status">
