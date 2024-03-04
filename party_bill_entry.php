@@ -189,37 +189,32 @@ if (!isset($_SESSION["admin_id"])) {
     exit();
 }
 
-
-// Function to generate a unique LR number
+// Function to generate a unique bill number
 function generateBillNumber($conn) {
-    
-    $query = "SELECT MAX(bill_number) AS max_bill_no FROM party_bill";
+    // Get the current session (e.g., 23-24)
+    $current_session = date('y') . '-' . (date('y') + 1);
+
+    // Retrieve the maximum bill number for the current session from the database
+    $query = "SELECT MAX(bill_number) AS max_bill_no FROM party_bill WHERE bill_number LIKE 'ARC/$current_session/%'";
     $result = mysqli_query($conn, $query);
     $row = mysqli_fetch_assoc($result);
     $max_bill_no = $row['max_bill_no'];
 
+    // If no bill number exists in the current session, start from 1
     if ($max_bill_no === null) {
-        return 1;
+        return "ARC/$current_session/0001";
     }
 
-    $next_bill_no = $max_bill_no + 1;
+    // Extract the last four digits of the maximum bill number
+    $last_four_digits = substr($max_bill_no, -4);
 
-    $query = "SELECT COUNT(*) AS count FROM party_bill WHERE bill_number = $next_bill_no";
-    $result = mysqli_query($conn, $query);
-    $row = mysqli_fetch_assoc($result);
-    $count = $row['count'];
+    // Increment the last four digits by 1 to get the next bill number
+    $next_bill_number = str_pad(($last_four_digits + 1), 4, '0', STR_PAD_LEFT);
 
-    while ($count > 0) {
-        $next_bill_no++;
-        $query = "SELECT COUNT(*) AS count FROM party_bill WHERE bill_number = $next_bill_no";
-        $result = mysqli_query($conn, $query);
-        $row = mysqli_fetch_assoc($result);
-        $count = $row['count'];
-    }
-
-    // Return the unique LR number
-    return $next_bill_no;
+    // Return the unique bill number in the desired format
+    return "ARC/$current_session/$next_bill_number";
 }
+
 
 $bill_number = generateBillNumber($conn);
 

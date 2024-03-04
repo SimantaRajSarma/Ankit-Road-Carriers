@@ -16,38 +16,30 @@ include('pages/fetch_data.php');
 
 // Function to generate a unique LR number
 function generateLRNumber($conn) {
-    // Retrieve the maximum LR number from the database
-    $query = "SELECT MAX(lr_no) AS max_lr FROM trip_entry";
+    // Get the current session (e.g., 23-24)
+    $current_session = date('y') . '-' . (date('y') + 1);
+
+    // Retrieve the maximum LR number for the current session from the database
+    $query = "SELECT MAX(lr_no) AS max_lr FROM trip_entry WHERE lr_no LIKE 'ARC/$current_session/%'";
     $result = mysqli_query($conn, $query);
     $row = mysqli_fetch_assoc($result);
     $max_lr = $row['max_lr'];
 
-    // If no LR number exists in the database, start from 1
+    // If no LR number exists in the current session, start from 1
     if ($max_lr === null) {
-        return 1;
+        return "ARC/$current_session/0001";
     }
 
-    // Increment the maximum LR number by 1 to get the next LR number
-    $next_lr = $max_lr + 1;
+    // Extract the last four digits of the maximum LR number
+    $last_four_digits = substr($max_lr, -4);
 
-    // Check if the generated LR number already exists in the database
-    $query = "SELECT COUNT(*) AS count FROM trip_entry WHERE lr_no = $next_lr";
-    $result = mysqli_query($conn, $query);
-    $row = mysqli_fetch_assoc($result);
-    $count = $row['count'];
+    // Increment the last four digits by 1 to get the next LR number
+    $next_lr_number = str_pad(($last_four_digits + 1), 4, '0', STR_PAD_LEFT);
 
-    // If LR number exists, generate a new LR number
-    while ($count > 0) {
-        $next_lr++;
-        $query = "SELECT COUNT(*) AS count FROM trip_entry WHERE lr_no = $next_lr";
-        $result = mysqli_query($conn, $query);
-        $row = mysqli_fetch_assoc($result);
-        $count = $row['count'];
-    }
-
-    // Return the unique LR number
-    return $next_lr;
+    // Return the unique LR number in the desired format
+    return "ARC/$current_session/$next_lr_number";
 }
+
 
 $lr_number = generateLRNumber($conn);
   
@@ -346,7 +338,7 @@ echo "<script>
                     name="lr_number"
                     class="form-control other_charges"
                     value="<?= $lr_number; ?>"
-                   
+                   readonly
                 />
             </div>
 
