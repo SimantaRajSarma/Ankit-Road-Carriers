@@ -24,6 +24,24 @@ function fetchVehicles($conn) {
     return $vehicles;
 }
 
+// Function to fetch LR numbers from the database
+function fetchLRNumbers($conn) {
+    // Fetch LR numbers from the database
+    $query = "SELECT trip_id AS id, lr_no AS name FROM trip_entry";
+    $result = mysqli_query($conn, $query);
+
+    // Check if query was successful
+    if ($result) {
+        // Fetch LR numbers into an array
+        $lr_numbers = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        return $lr_numbers;
+    } else {
+        // Return an empty array if query fails
+        return array();
+    }
+}
+
+
 
 // Function to fetch driver IDs and names from the database
 function fetchDriverData($conn) {
@@ -81,7 +99,7 @@ function fetchPartyData($conn) {
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
             $party_data[] = array(
-                'id' => $row["party_id"], 
+                'id' => $row["party_id"],
                 'name' => $row["party_name"]
             );
         }

@@ -1,10 +1,11 @@
 <?php
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 date_default_timezone_set('Asia/Kolkata');
-error_reporting(0);
+// error_reporting(0);
 
 include('pages/trip_search_functions.php');
+include('pages/fetch_data.php');
 
 session_start();
 include("include/connection.php");
@@ -19,25 +20,35 @@ $result = null;
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $partyID = isset($_POST['party_id']) ? $_POST['party_id'] : 'none';
-  $fromDate = $_POST['fdate'];
-  $toDate = $_POST['tdate'];
+    $partyID = isset($_POST['party_id']) ? $_POST['party_id'] : 'none';
+    $vehicleID = isset($_POST['vehicle_number']) ? $_POST['vehicle_number'] : 'none';
+    $lrNumberID = isset($_POST['lr_number']) ? $_POST['lr_number'] : 'none';
+    $fromDate = $_POST['fdate'];
+    $toDate = $_POST['tdate'];
 
-  if ($partyID != 'none' && !empty($fromDate) && !empty($toDate)) {
-      $result = fetchTripsByPartyAndDate($conn, $partyID, $fromDate, $toDate);
-  }
-  
-  elseif ($partyID != 'none' && empty($fromDate) && empty($toDate)) {
-      $result = fetchTripsByParty($conn, $partyID);
-  }
- 
-  elseif ($partyID == 'none' && !empty($fromDate) && !empty($toDate)) {
-      $result = fetchTripsByDate($conn, $fromDate, $toDate);
-  }
- 
-  else {
-      echo "<script>alert('Please select at least one search criteria.');</script>";
-  }
+    if ($partyID != 'none' && !empty($fromDate) && !empty($toDate)) {
+        // Fetch trips by party and date
+        $result = fetchTripsByPartyAndDate($conn, $partyID, $fromDate, $toDate);
+    } elseif ($vehicleID != 'none') {
+        // Fetch trips by vehicle
+        $result = fetchTripsByVehicle($conn, $vehicleID);
+    } elseif ($partyID != 'none') {
+        // Fetch trips by party
+        $result = fetchTripsByParty($conn, $partyID);
+    }
+     elseif ($lrNumberID != 'none') {
+        // Fetch trips by LR
+        $result = fetchTripsByLRNumber($conn, $lrNumberID);
+    }
+    elseif ($lrNumberID != 'none' && !empty($fromDate) && !empty($toDate)) {
+        // Fetch trips by LR number and date
+        $result = fetchTripsByLRNumberAndDate($conn, $lrNumberID, $fromDate, $toDate);
+    } elseif (!empty($fromDate) && !empty($toDate)) {
+        // Fetch trips by date
+        $result = fetchTripsByDate($conn, $fromDate, $toDate);
+    } else {
+        echo "<script>alert('Please select at least one search criteria.');</script>";
+    }
 
 }
 
@@ -303,11 +314,11 @@ function deleteConfirm(obj){
     <div class="row">
       <div class="col-md-4">
             <div class="form-group">
-                <label for="courseSelect" >Select Party:</label>
-                <select id="courseSelect" name="party_id" class="form-select">
+                <label for="courseSelect" >Search By Party:</label>
+                <select name="party_id" class="form-select">
                     <option value="none" selected disabled>Select a Party...</option>
                     <?php 
-                    $party_data = fetchParty($conn);
+                    $party_data = fetchPartyData($conn);
                         foreach ($party_data as $party): ?>
                         <option value="<?= $party['id']; ?>"><?= $party['name']; ?></option>
                     <?php endforeach; ?>
@@ -316,14 +327,40 @@ function deleteConfirm(obj){
         </div>
         <div class="col-md-4">
             <div class="form-group">
+                <label for="VehicleSelect" >Search By Vehicle:</label>
+                <select name="vehicle_number" class="form-select">
+                    <option value="none" selected disabled>Select vehicle...</option>
+                    <?php 
+                    $vehicle_data = fetchVehicles($conn);
+                        foreach ($vehicle_data as $vehicle): ?>
+                        <option value="<?= $vehicle['id']; ?>"><?= $vehicle['number']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="courseSelect" >Search By LR Number:</label>
+                <select name="lr_number" class="form-select">
+                    <option value="none" selected disabled>Select LR...</option>
+                    <?php 
+                    $fetch_lr_numbers = fetchLRNumbers($conn);
+                        foreach ($fetch_lr_numbers as $lr_number): ?>
+                        <option value="<?= $lr_number['id']; ?>"><?= $lr_number['name']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
                 <label for="startDate">From:</label>
-                <input type="date" class="form-control" id="startDate" name="fdate" value="<?php echo date('Y-m-d'); ?>">
+                <input type="date" class="form-control" id="startDate" name="fdate">
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
                 <label for="endDate">To:</label>
-                <input type="date" id="endDate" class="form-control" name="tdate" value="<?php echo date('Y-m-d'); ?>">
+                <input type="date" id="endDate" class="form-control" name="tdate">
             </div>
         </div>
     </div>
